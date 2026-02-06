@@ -2,7 +2,9 @@
 
 ## Overview
 
-The Product Owner Orchestration System follows a **layered architecture** that separates concerns between domain knowledge (Skills), workflow orchestration (Agents), and infrastructure (Claude Code).
+The Product Owner Orchestration System follows a **simplified layered architecture** that separates concerns between domain knowledge (Skills), workflow orchestration (Agents), and infrastructure (Claude Code).
+
+**Key Design Principle**: 2 core agents for complex workflows + 9 skills for direct invocation = clarity and control.
 
 ## Architecture Diagram
 
@@ -21,9 +23,14 @@ The Product Owner Orchestration System follows a **layered architecture** that s
          ┌───────────────┴───────────────┐
          ▼                               ▼
 ┌─────────────────┐             ┌─────────────────┐
-│  Agent Layer    │◄───────────►│  Skills Layer   │
-│  (Orchestration)│             │  (Knowledge)    │
-└────────┬────────┘             └────────┬────────┘
+│  Agent Layer    │             │  Skills Layer   │
+│  (2 Agents)     │◄───────────►│  (9 Skills)     │
+│                 │             │                 │
+│ • Q&A           │             │ • Domain        │
+│ • Brainstorm    │             │   Knowledge     │
+└────────┬────────┘             │ • Frameworks    │
+         │                      │ • Templates     │
+         │                      └────────┬────────┘
          │                               │
          ▼                               ▼
 ┌─────────────────────────────────────────────────────────────┐
@@ -52,41 +59,95 @@ The Product Owner Orchestration System follows a **layered architecture** that s
 
 **Interactions**:
 - Natural language requests
-- Explicit agent invocation (@agent-name)
+- Agent invocation: `@product-knowledge`, `@feature-brainstormer`
+- Direct skill calls: "Use [skill-name] skill to..."
 - File-based inputs (requirements docs, backlog files)
 
 ---
 
 ### 2. Claude Code Interface Layer
 
-**Purpose**: Translation between user intent and agent orchestration
+**Purpose**: Translation between user intent and execution
 
 **Responsibilities**:
 - Parse natural language requests
-- Route requests to appropriate agents
+- Route requests to agents or skills
 - Manage conversation context
-- Handle multi-agent workflows
+- Handle multi-step workflows
 
 **Key Capabilities**:
-- Automatic agent delegation based on trigger phrases
-- Explicit agent invocation with @mentions
-- Context preservation across agent calls
-- Result aggregation from multiple agents
+- Agent invocation with @mentions
+- Direct skill application based on user instructions
+- Context preservation across steps
+- Result aggregation
 
 ---
 
 ### 3. Agent Layer (Workflow Orchestration)
 
-**Purpose**: Coordinate tools to accomplish product management tasks
+**Purpose**: Orchestrate tools for complex workflows
 
-**Architecture**:
+**Current Agents (2)**:
+
+#### product-knowledge
+```yaml
+name: product-knowledge
+description: Answer questions about product from documentation
+tools: Read, Bash, Grep, Glob
+model: inherit
+memory: user
+skills: [agile-product-owner]
+```
+
+**Responsibilities**:
+- Search all product documentation
+- Never guess - only answer from documented information
+- Always cite sources (file:line)
+- Say "I don't know" when info not found
+
+**Workflow**:
+1. Parse user question
+2. Use Glob to find relevant files
+3. Use Grep to search content
+4. Use Read to extract details
+5. Synthesize answer with citations
+
+---
+
+#### feature-brainstormer
+```yaml
+name: feature-brainstormer
+description: Facilitate creative brainstorming with optional story creation
+tools: Read, Write, Bash, Grep, Glob
+model: inherit
+memory: user
+skills: [agile-product-owner]
+```
+
+**Responsibilities**:
+- Facilitate structured brainstorming sessions
+- Generate 50-100+ diverse ideas
+- Evaluate feasibility and impact
+- Optional: Create user stories with estimates
+- Save output to `brainstorm/[feature-name]/`
+
+**Workflow**:
+1. Read product context from `product_documents/`
+2. Generate ideas across multiple categories
+3. Evaluate each idea (feasibility, impact)
+4. Create summary with top recommendations
+5. Optional: Generate user stories with estimates
+
+---
+
+**Agent Architecture**:
 ```
 Agent = Configuration + System Prompt + Tool Access + Skill References
 
 Components:
 ├── Frontmatter (YAML)
 │   ├── name: Unique identifier
-│   ├── description: Trigger phrases
+│   ├── description: Purpose and usage
 │   ├── tools: Available tools
 │   ├── model: LLM model selection
 │   ├── memory: Memory scope (user/project/local)
@@ -96,27 +157,8 @@ Components:
     ├── Skills Integration: What skills provide
     ├── Core Responsibilities: What agent does
     ├── Workflow Patterns: How agent operates
-    ├── Collaboration Signals: How agents coordinate
     └── Memory Management: What to remember
 ```
-
-**Agent Categories**:
-
-**Skill-Integrated Agents** (8):
-- analytics-insights
-- backlog-manager
-- documentation-agent
-- esign-domain-expert
-- prioritization-engine
-- requirements-analyst
-- sprint-planner
-- stakeholder-communicator
-
-**Standalone Agents** (4):
-- competitive-intel
-- risk-assessor
-- roadmap-planner
-- user-research
 
 **Storage Locations** (Priority Order):
 1. CLI arguments (highest priority)
@@ -128,7 +170,19 @@ Components:
 
 ### 4. Skills Layer (Domain Knowledge)
 
-**Purpose**: Provide reusable domain expertise across agents
+**Purpose**: Provide reusable domain expertise called directly by users
+
+**Current Skills (9)**:
+
+1. **agile-product-owner** - User stories, INVEST principles, estimation
+2. **analytics-insights** - Metrics frameworks (HEART, AARRR), A/B testing
+3. **backlog-manager** - Story templates, epic breakdown (+ 2 reference files)
+4. **documentation-specialist** - PRD/ADR templates, documentation standards
+5. **esign-domain-expert** - eIDAS/ESIGN compliance, audit trails (+ 1 reference file)
+6. **prioritization-engine** - RICE/MoSCoW/WSJF frameworks (+ 1 reference file)
+7. **requirements-analyst** - Requirements extraction, gap analysis (+ 1 reference file)
+8. **sprint-planner** - Sprint planning methodology, capacity calculation
+9. **stakeholder-communicator** - Communication templates, audience guidelines
 
 **Architecture**:
 ```
@@ -148,21 +202,22 @@ skill-name/
 **Design Principles**:
 1. **Progressive Disclosure**: Main SKILL.md is concise, references provide depth
 2. **Single Responsibility**: Each skill covers one domain area
-3. **Reusability**: Multiple agents can use same skill
-4. **Versioning**: Skills can evolve independently from agents
+3. **Reusability**: Multiple agents can use same skill, users call directly
+4. **Versioning**: Skills can evolve independently
 
 **Storage Locations**:
-- Development: `/skills/` (source files)
+- Development: `/claude/skills/` (source files)
 - Active: `/.claude/skills/` (packaged skills)
 - User-level: `~/.claude/skills/` (installed skills)
 
-**Packaging**:
-```bash
-cd skills/
-./package_skill.py skill-name
-# Creates: skill-name.skill (distributable package)
-# Installs to: ~/.claude/skills/skill-name/
-```
+**Skills with Reference Files**:
+- `backlog-manager/references/` - 2 files (story-templates.md, epic-breakdown-example.md)
+- `esign-domain-expert/references/` - 1 file (domain-knowledge.md)
+- `prioritization-engine/references/` - 1 file (frameworks.md)
+- `requirements-analyst/references/` - 1 file (examples.md)
+
+**Skills with Scripts**:
+- `agile-product-owner/scripts/` - user_story_generator.py
 
 ---
 
@@ -181,10 +236,13 @@ cd skills/
 | **Grep** | Search file contents | Find patterns, extract info |
 | **Glob** | Find files by pattern | Locate files, list directories |
 
-**Tool Restrictions by Agent**:
-- **Read-only agents**: competitive-intel, risk-assessor (analysis only)
-- **Read-write agents**: backlog-manager, documentation-agent (create/update)
-- **Full access**: Most agents (complete workflow orchestration)
+**Tool Usage by Agent**:
+- **product-knowledge**: Read, Bash, Grep, Glob (search-focused)
+- **feature-brainstormer**: Read, Write, Bash, Grep, Glob (full workflow)
+
+**Tool Usage by Skills**:
+- Skills don't use tools directly
+- Users apply skills, then use tools as needed
 
 ---
 
@@ -194,104 +252,166 @@ cd skills/
 
 **Directory Structure**:
 ```
-project/
-├── .claude/
-│   ├── agents/                # Agent definitions
-│   │   └── *.md
-│   └── skills/                # Active skills
-│       └── skill-name/
-│           ├── SKILL.md
-│           └── references/
+ProductOwnerOrchestration/
+├── claude/
+│   ├── agents/                    # Agent definitions (2 agents)
+│   │   ├── README.md
+│   │   ├── feature-brainstormer.md
+│   │   └── product-knowledge.md
+│   │
+│   ├── skills/                    # Skills source (9 skills)
+│   │   ├── agile-product-owner/
+│   │   │   ├── SKILL.md
+│   │   │   └── scripts/user_story_generator.py
+│   │   ├── analytics-insights/SKILL.md
+│   │   ├── backlog-manager/
+│   │   │   ├── SKILL.md
+│   │   │   └── references/
+│   │   │       ├── story-templates.md
+│   │   │       └── epic-breakdown-example.md
+│   │   ├── documentation-specialist/SKILL.md
+│   │   ├── esign-domain-expert/
+│   │   │   ├── SKILL.md
+│   │   │   └── references/domain-knowledge.md
+│   │   ├── prioritization-engine/
+│   │   │   ├── SKILL.md
+│   │   │   └── references/frameworks.md
+│   │   ├── requirements-analyst/
+│   │   │   ├── SKILL.md
+│   │   │   └── references/examples.md
+│   │   ├── sprint-planner/SKILL.md
+│   │   ├── stakeholder-communicator/SKILL.md
+│   │   └── document-skills/         # Document processing skills
+│   │       ├── docx/                # Word documents
+│   │       ├── pdf/                 # PDF documents
+│   │       ├── pptx/                # PowerPoint presentations
+│   │       └── xlsx/                # Excel spreadsheets
+│   │
+│   └── README.md
 │
-├── skills/                    # Skill source (development)
-│   └── skill-name/
-│       ├── SKILL.md
-│       └── references/
+├── docs/                          # Documentation
+│   ├── HOW_TO_USE_SKILLS.md      # Skills usage guide
+│   ├── workflows/                 # Workflow guides (3 files)
+│   ├── architecture/              # Architecture docs (4 files)
+│   └── product/                   # Product docs (2 files)
 │
-├── docs/                      # Product documentation
-│   ├── product/
-│   ├── architecture/
-│   ├── workflows/
-│   ├── templates/
-│   └── decisions/
-│
-├── backlog/                   # User stories, epics
-│   ├── epics/
-│   └── stories/
-│
-├── sprint/                    # Sprint plans
-│   └── sprint-XX/
-│
-└── data/                      # Analytics, metrics
-    ├── metrics/
-    └── feedback/
+├── product_documents/             # Product vision, user research
+├── brainstorm/                    # Brainstorming outputs
+├── backlog/                       # User stories
+├── sprints/                       # Sprint plans
+├── requirements/                  # Requirements docs
+└── README.md                      # Project README
 ```
 
 ---
 
 ## Data Flow
 
-### Example: User Story Creation Workflow
+### Example 1: Q&A Workflow
 
 ```
 1. User Request
-   "Create user stories for mobile signature feature"
+   "@product-knowledge - What are our Q2 priorities?"
    │
    ▼
 2. Claude Code Interface
-   - Parses request
-   - Identifies task: user story creation
-   - Routes to: @backlog-manager
+   - Parses @mention
+   - Routes to: product-knowledge agent
    │
    ▼
-3. Agent: backlog-manager
-   - Receives task
-   - References skill: backlog-manager
-   - Uses Read tool → Extract requirements
+3. Agent: product-knowledge
+   - Uses Glob tool → Find roadmap files
+   - Uses Grep tool → Search for "Q2" and "priorities"
+   - Uses Read tool → Extract relevant sections
+   - References agile-product-owner skill for context
    │
    ▼
-4. Skill: backlog-manager
+4. Skill: agile-product-owner
+   - Provides product management context
+   - Provides prioritization frameworks
+   │
+   ▼
+5. Agent: product-knowledge (continued)
+   - Synthesizes answer from findings
+   - Cites sources (file:line)
+   - Returns answer to user
+   │
+   ▼
+6. Response to User
+   - Answer with citations
+   - "Based on docs/product/roadmap-q2.md:23..."
+```
+
+### Example 2: Direct Skill Invocation Workflow
+
+```
+1. User Request
+   "Use backlog-manager skill to create user stories for mobile signature feature"
+   │
+   ▼
+2. Claude Code Interface
+   - Recognizes direct skill call
+   - Loads backlog-manager skill
+   - Applies skill knowledge to task
+   │
+   ▼
+3. Skill: backlog-manager
    - Provides INVEST principles
-   - Provides user story template
-   - Provides acceptance criteria patterns
+   - Provides user story template from references/story-templates.md
+   - Provides epic breakdown patterns
    │
    ▼
-5. Agent: backlog-manager (continued)
-   - Applies skill's templates
+4. Execution (Claude with Skill Context)
+   - Applies skill's templates to feature context
    - Generates user stories
    - Uses Write tool → Create story files
-   - Signals @requirements-analyst for validation
    │
    ▼
-6. File System
-   - Creates: backlog/stories/US-001.md
-   - Updates: backlog/INDEX.md
+5. File System
+   - Creates: backlog/mobile-signature/US-001.md
+   - Creates: backlog/mobile-signature/US-002.md
+   - Creates: backlog/mobile-signature/README.md
    │
    ▼
-7. Response to User
+6. Response to User
    - Summary of created stories
-   - Locations of files
-   - Next steps recommendation
+   - Locations of files (backlog/mobile-signature/)
+   - Story points and acceptance criteria
 ```
 
-### Multi-Agent Collaboration Flow
+### Example 3: Brainstorming Workflow
 
 ```
-User: "Create Q2 roadmap"
-
-1. @roadmap-planner (orchestrator)
-   ├─► Calls @analytics-insights → Current metrics
-   ├─► Calls @user-research → User needs
-   ├─► Calls @competitive-intel → Market analysis
-   ├─► Calls @prioritization-engine → Prioritized backlog
-   └─► Synthesizes → Creates roadmap
-
-2. @roadmap-planner
-   └─► Calls @stakeholder-communicator → Executive presentation
-
-3. Result
-   ├─► Roadmap document (docs/product/roadmap-Q2-2024.md)
-   └─► Executive presentation (docs/presentations/Q2-roadmap.md)
+1. User Request
+   "@feature-brainstormer - Brainstorm AI features for mobile document prep"
+   │
+   ▼
+2. Claude Code Interface
+   - Routes to: feature-brainstormer agent
+   │
+   ▼
+3. Agent: feature-brainstormer
+   - Uses Read tool → Extract context from product_documents/
+   - References agile-product-owner skill
+   - Generates 65+ ideas across categories
+   - Evaluates feasibility (1-10 scale)
+   - Uses Write tool → Create brainstorm/ai-mobile-prep/IDEAS.md
+   - Uses Write tool → Create brainstorm/ai-mobile-prep/SUMMARY.md
+   - Uses Write tool → Create brainstorm/ai-mobile-prep/NEXT_STEPS.md
+   │
+   ▼
+4. Agent: feature-brainstormer (optional)
+   - Asks: "Create draft user stories?"
+   - If YES: Uses agile-product-owner skill
+   - Generates stories with estimates
+   - Uses Write tool → Create brainstorm/ai-mobile-prep/user-stories/
+   │
+   ▼
+5. Response to User
+   - Summary of ideas generated (65+)
+   - Top 10 recommendations
+   - Optional: User stories created
+   - Next steps for implementation
 ```
 
 ---
@@ -308,52 +428,98 @@ User: "Create Q2 roadmap"
 
 ### Memory Content Structure
 
+Both agents use **user-level memory** to learn across projects:
+
 ```markdown
 # MEMORY.md (per agent)
 
 ## Patterns Learned
-- [Date] Pattern: Story estimation accuracy improves with reference stories
-- [Date] Pattern: Sprint capacity = velocity × 0.85 (15% buffer optimal)
+- [Date] Pattern: Product questions often require searching multiple doc types
+- [Date] Pattern: Brainstorming sessions benefit from diverse categories
 
 ## Common Tasks
-- User story creation for mobile features
-- Sprint planning for 2-week sprints with 6-person team
+- Q&A about roadmaps, priorities, compliance
+- Brainstorming for mobile features and AI capabilities
+- User story creation from brainstorming output
 
 ## Institutional Knowledge
-- Team velocity: ~42 points/sprint (last 6 sprints)
-- Common domains: eSignature, mobile apps
-- Stakeholder preferences: Executive updates prefer metrics-first
+- Documentation structure: product_documents/, docs/product/, docs/architecture/
+- Common domains: eSignature, mobile apps, AI features
+- Team preferences: INVEST-compliant stories, Fibonacci scale
 
 ## Historical Decisions
-- [Date] Decision: Use RICE for feature prioritization (most effective)
-- [Date] Decision: Story points: Fibonacci scale (1, 2, 3, 5, 8, 13)
+- [Date] Decision: Never guess when answering questions - cite sources or say "I don't know"
+- [Date] Decision: Optional user story creation gives users flexibility
 ```
 
 ---
 
-## Integration Points
+## Usage Patterns
 
-### External Tool Integration (Future)
+### When to Use Agents
+
+**Use @product-knowledge when**:
+- Need to search documentation
+- Want cited answers from docs
+- Don't know where information is located
+- Need comprehensive document search
+
+**Use @feature-brainstormer when**:
+- Need creative ideation
+- Want structured brainstorming with evaluation
+- Need optional user story generation
+- Want 50-100+ diverse ideas
+
+### When to Call Skills Directly
+
+**Call skills directly when**:
+- Creating artifacts (stories, plans, docs)
+- Applying specific frameworks (RICE, INVEST, MoSCoW)
+- Need full control over the process
+- Want to see methodology explicitly
+- Task is straightforward
+
+**Example Direct Skill Calls**:
+```
+Use backlog-manager skill to create user stories...
+Use sprint-planner skill to plan Sprint 12...
+Use prioritization-engine skill with RICE framework...
+Use requirements-analyst skill to analyze requirements...
+Use documentation-specialist skill to create PRD...
+```
+
+---
+
+## Multi-Step Workflow Pattern
+
+Users compose workflows by combining agents and skills:
 
 ```
-┌─────────────────┐
-│ Jira / Linear   │◄─── API Integration
-└─────────────────┘
-         │
-         ▼
-┌─────────────────────────────────┐
-│  Agent: backlog-sync            │
-│  - Pull stories from Jira        │
-│  - Apply local analysis          │
-│  - Push enriched data back       │
-└─────────────────────────────────┘
-```
+Example: Complete Feature Development
 
-### Webhook Integration (Future)
+Step 1: Brainstorm
+@feature-brainstormer - Brainstorm [feature topic]
 
-```
-External Event → Webhook → Agent Trigger
-  (GitHub PR)      (API)    (@risk-assessor)
+Step 2: Create Stories (Direct Skill Call)
+Use backlog-manager skill to create stories from brainstorm/[feature]/SUMMARY.md
+- Reference templates from backlog-manager/references/
+- Apply INVEST principles
+- Create in backlog/[feature]/
+
+Step 3: Prioritize (Direct Skill Call)
+Use prioritization-engine skill with RICE framework
+- Score stories from backlog/[feature]/
+- Rank by RICE score
+- Output to backlog/[feature]/PRIORITY_RANKING.md
+
+Step 4: Plan Sprint (Direct Skill Call)
+Use sprint-planner skill
+- Team: [capacity details]
+- Select top-ranked stories
+- Create sprints/sprint-X/sprint-plan.md
+
+Step 5: Q&A
+@product-knowledge - What compliance requirements apply to this feature?
 ```
 
 ---
@@ -368,23 +534,10 @@ External Event → Webhook → Agent Trigger
 
 ### Agent Permissions
 - Agents have explicit tool restrictions
-- Read-only agents cannot modify files
+- product-knowledge: Read-only search operations
+- feature-brainstormer: Full read-write for workflow orchestration
 - Bash commands sandboxed to project directory
-- Memory scoped appropriately
-
----
-
-## Scalability
-
-### Horizontal Scaling
-- Add more agents for new domains
-- Agents operate independently
-- No central coordination bottleneck
-
-### Vertical Scaling
-- Skills can grow with reference files
-- Agents remain lightweight
-- Memory accumulation bounded by scope
+- Memory scoped appropriately (user-level for cross-project learning)
 
 ---
 
@@ -392,49 +545,57 @@ External Event → Webhook → Agent Trigger
 
 ### Latency
 - Agent invocation: ~2-5 seconds
-- Multi-agent workflows: Additive (sequential)
-- Parallel agent calls: Supported (independent tasks)
+- Direct skill application: Immediate (no agent overhead)
+- Multi-step workflows: Sequential execution
+- Document search (product-knowledge): Depends on document count
 
 ### Optimization Strategies
 - Cache frequently used skill content
 - Minimize agent prompt size (use skills for bulk knowledge)
 - Use Read tool efficiently (targeted reads, not full scans)
+- Direct skill calls faster than agent delegation for simple tasks
 
 ---
 
 ## Extensibility
 
-### Adding New Agents
-1. Create agent markdown file
-2. Define frontmatter (name, tools, model, memory, skills)
-3. Write system prompt
-4. Install to `~/.claude/agents/`
+### Adding Custom Skills
 
-### Adding New Skills
-1. Use template: `skills/template-skill/`
-2. Fill SKILL.md with domain knowledge
-3. Add reference files as needed
-4. Package: `./package_skill.py skill-name`
-
-### Custom Workflows
-1. Define workflow in agent prompt
-2. Use collaboration signals
-3. Chain agents explicitly or implicitly
-
----
-
-## Monitoring & Observability
-
-### Agent Memory Inspection
+1. Create skill directory in `claude/skills/`:
 ```bash
-# View what agent has learned
-cat ~/.claude/agent-memory/backlog-manager/MEMORY.md
+mkdir claude/skills/my-custom-skill
 ```
 
-### Workflow Tracing
-- Agent collaboration signals visible in conversation
-- File system changes trackable
-- Memory updates logged
+2. Create SKILL.md with domain knowledge:
+```markdown
+---
+name: my-custom-skill
+description: Custom domain expertise
+---
+
+# My Custom Skill
+
+[Domain knowledge, frameworks, templates]
+```
+
+3. Add reference files (optional):
+```bash
+mkdir claude/skills/my-custom-skill/references
+# Add templates, examples, frameworks
+```
+
+4. Reference in agent or call directly:
+```
+Use my-custom-skill to [task]
+```
+
+### Modifying Agents
+
+Edit agent markdown files in `claude/agents/`:
+- Change system prompt
+- Adjust tool access
+- Update skill references
+- Modify memory scope
 
 ---
 
@@ -442,22 +603,22 @@ cat ~/.claude/agent-memory/backlog-manager/MEMORY.md
 
 ### Local Development
 ```
-Skills:  /skills/ (source)
-Agents:  /.claude/agents/ (project-level)
+Agents:  /claude/agents/ (project-level)
+Skills:  /claude/skills/ (source files)
 Memory:  /.claude/agent-memory/ (project-scoped)
 ```
 
 ### User Installation
 ```
-Skills:  ~/.claude/skills/ (user-level)
 Agents:  ~/.claude/agents/ (user-level)
+Skills:  ~/.claude/skills/ (user-level)
 Memory:  ~/.claude/agent-memory/ (cross-project)
 ```
 
 ### Team Deployment
 ```
-Skills:  Shared via Git (/.claude/skills/)
-Agents:  Shared via Git (/.claude/agents/)
+Agents:  Shared via Git (/claude/agents/)
+Skills:  Shared via Git (/claude/skills/)
 Memory:  Per-developer (local)
 ```
 
@@ -468,22 +629,81 @@ Memory:  Per-developer (local)
 | Component | Version | Compatibility |
 |-----------|---------|---------------|
 | Claude Code | Any with subagent support | Required |
-| Skills | v1.0+ | Backward compatible |
-| Agents | v2.0+ | Current architecture |
+| System Architecture | v3.0 (Simplified) | Current |
+| Agents | 2 core agents | Stable |
+| Skills | 9 skills | Backward compatible |
 | Memory Format | Markdown | Stable |
 
 ---
 
-## Future Architecture Enhancements
+## Architecture Benefits
 
-### Planned (Q1-Q2 2024)
-- Workflow automation hooks
-- Event-driven agent triggers
+### Simplification (v3.0)
+- ✅ **Clearer**: 2 agents vs 14 agents
+- ✅ **More Control**: Direct skill calls vs agent delegation
+- ✅ **More Transparent**: Users see methodology explicitly
+- ✅ **Easier to Learn**: Simple mental model (2 agents + 9 skills)
+
+### Separation of Concerns
+- ✅ **Agents**: Complex workflows requiring tool orchestration
+- ✅ **Skills**: Domain knowledge called directly by users
+- ✅ **Clear Boundary**: Agents orchestrate, skills inform
+
+### Scalability
+- ✅ Add new skills without adding agents
+- ✅ Skills reusable across projects
+- ✅ Memory accumulation bounded by scope
+- ✅ No central coordination bottleneck
+
+---
+
+## System Evolution
+
+### Version History
+- **v3.0.0** (2024-02-07): Simplified to 2 agents + 9 skills (call directly)
+- **v2.0.0** (2024-02-06): Added skills integration (14 agents + 8 skills)
+- **v1.0.0** (2024-01-XX): Initial agent system
+
+### Design Decisions
+- **Simplification**: Reduced agent count for clarity (user feedback: "too many agents")
+- **Direct Skill Calls**: Users wanted more control over which knowledge to apply
+- **Agent Retention**: Kept only agents providing unique workflow value (Q&A, brainstorming)
+- **Skill Expansion**: Maintained all skills as direct-access domain knowledge
+
+### Future Considerations
+- Additional skills for new domains (as needed)
 - External tool integrations (Jira, Linear)
-- Real-time collaboration features
+- Workflow automation hooks
+- Performance monitoring
 
-### Under Consideration
-- Agent-to-agent direct communication (no user mediation)
-- Distributed agent execution
-- Cloud-based memory sync
-- Custom skill creation UI
+---
+
+## Monitoring & Observability
+
+### Agent Memory Inspection
+```bash
+# View what product-knowledge has learned
+cat ~/.claude/agent-memory/product-knowledge/MEMORY.md
+
+# View what feature-brainstormer has learned
+cat ~/.claude/agent-memory/feature-brainstormer/MEMORY.md
+```
+
+### Workflow Tracing
+- Agent activities visible in conversation
+- File system changes trackable (backlog/, brainstorm/, docs/)
+- Memory updates logged in MEMORY.md
+- Direct skill calls explicit in user prompts
+
+---
+
+## Conclusion
+
+The Product Owner Orchestration System v3.0 provides a **simplified, controllable, and transparent** architecture:
+
+- **2 Agents**: Handle complex workflows (Q&A and brainstorming)
+- **9 Skills**: Provide domain knowledge users call directly
+- **Clear Separation**: Agents orchestrate tools, skills provide knowledge
+- **User Control**: Direct skill calls give full transparency and control
+
+This architecture prioritizes clarity over magic, control over convenience, and simplicity over complexity.
