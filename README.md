@@ -1,6 +1,6 @@
 # Product Owner Orchestration System
 
-A streamlined AI-powered system for product management workflows using Claude Code agents and skills.
+A streamlined AI-powered system for product management workflows with **dual-format support** for both Claude Code and OpenCode.
 
 ## Overview
 
@@ -11,23 +11,65 @@ This system provides **2 core agents** for complex workflows and **9 specialized
 - **2 Core Agents**: Handle complex workflows (Q&A and brainstorming)
 - **9 Skills**: Call directly for full control over frameworks and methodologies
 - **Clear Separation**: Agents orchestrate tools, skills provide knowledge
+- **Dual Format**: Works with both Claude Code and OpenCode subagent systems
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Installation
 
+**IMPORTANT**: This repository contains agents in **two formats**:
+- `.claude/agents/` - Claude Code subagent format
+- `.opencode/agents/` - OpenCode subagent format
+
+**Choose your format based on your environment:**
+
+#### For OpenCode Users
+
 ```bash
-# Clone or navigate to project
-cd /Users/trankhanh/Desktop/MyProjects/ProductOwnerOrchestration
+# 1. Clone repository
+git clone <repo-url>
+cd ProductOwnerOrchestration
 
-# Install agents (user-level)
-mkdir -p ~/.claude/agents
-cp claude/agents/feature-brainstormer.md ~/.claude/agents/
-cp claude/agents/product-knowledge.md ~/.claude/agents/
+# 2. REMOVE Claude Code agents (not compatible)
+rm -rf .claude/
 
-# Verify skills are installed
-ls ~/.claude/skills/
+# 3. OpenCode automatically loads agents from .opencode/agents/
+# No manual installation needed - agents are ready to use!
+
+# 4. Verify agents are available
+ls .opencode/agents/
+# Should show: feature-brainstormer.md, product-knowledge.md, README.md
 ```
+
+#### For Claude Code Users
+
+```bash
+# 1. Clone repository
+git clone <repo-url>
+cd ProductOwnerOrchestration
+
+# 2. REMOVE OpenCode agents (not compatible)
+rm -rf .opencode/
+
+# 3. Install agents to user-level (recommended)
+mkdir -p ~/.claude/agents
+cp .claude/agents/feature-brainstormer.md ~/.claude/agents/
+cp .claude/agents/product-knowledge.md ~/.claude/agents/
+
+# OR install project-level (specific to this project)
+# Agents already in .claude/agents/ - no action needed
+
+# 4. Verify skills are installed
+ls ~/.claude/skills/
+# Should show 9+ skill directories
+```
+
+### ⚙️ Installation Options Summary
+
+| Environment | Keep | Remove | Installation |
+|-------------|------|--------|--------------|
+| **OpenCode** | `.opencode/` | `.claude/` | Auto-loaded from `.opencode/agents/` |
+| **Claude Code** | `.claude/` | `.opencode/` | Copy to `~/.claude/agents/` (user-level) |
 
 ### Basic Usage
 
@@ -228,7 +270,7 @@ ProductOwnerOrchestration/
 ├── README.md                          # This file
 ├── FINAL_SESSION_SUMMARY.md          # Complete session summary
 │
-├── claude/
+├── .claude/                           ⚠️ CLAUDE CODE FORMAT
 │   ├── agents/
 │   │   ├── README.md                 # Agent system documentation
 │   │   ├── feature-brainstormer.md   # Brainstorming agent
@@ -244,6 +286,12 @@ ProductOwnerOrchestration/
 │       ├── requirements-analyst/     # Requirements quality + references
 │       ├── sprint-planner/           # Sprint planning methodology
 │       └── stakeholder-communicator/ # Communication templates
+│
+├── .opencode/                         ⚠️ OPENCODE FORMAT
+│   └── agents/
+│       ├── README.md                 # Agent system documentation
+│       ├── feature-brainstormer.md   # Brainstorming agent (OpenCode format)
+│       └── product-knowledge.md      # Q&A agent (OpenCode format)
 │
 ├── docs/
 │   ├── HOW_TO_USE_SKILLS.md         # Skills usage guide
@@ -268,6 +316,10 @@ ProductOwnerOrchestration/
 ├── backlog/                         # User stories
 └── sprints/                         # Sprint plans
 ```
+
+**⚠️ Important**:
+- **OpenCode users**: Keep `.opencode/`, remove `.claude/`
+- **Claude Code users**: Keep `.claude/`, remove `.opencode/`
 
 ## Testing & Validation
 
@@ -322,32 +374,43 @@ ProductOwnerOrchestration/
 
 ## Requirements
 
+### For OpenCode
+- **OpenCode**: Latest version with subagent support
+- **Model**: Works with claude-sonnet-4.5 or compatible models
+- **Environment**: macOS/Linux/Windows with bash support
+- **Note**: Agents auto-load from `.opencode/agents/` (no manual installation needed)
+
+### For Claude Code
 - **Claude Code**: Latest version with subagent and skills support
 - **Model**: Works with claude-sonnet-4.5 or compatible models
 - **Environment**: macOS/Linux/Windows with bash support
+- **Skills**: Requires skills installed in `~/.claude/skills/`
 
 ## Configuration
 
-### User-Level (Recommended)
+### OpenCode Setup
 
-Agents available in all projects:
+**Agents**: Auto-loaded from `.opencode/agents/` (already configured)
 
-```bash
-cp claude/agents/*.md ~/.claude/agents/
+**Skills**: Activate skills by calling them directly in prompts:
+```
+Use the backlog-manager skill to create user stories...
 ```
 
-### Project-Level
+### Claude Code Setup
 
-Agents specific to this project:
+**User-Level Installation (Recommended)** - Agents available in all projects:
 
 ```bash
-mkdir -p .claude/agents
-cp claude/agents/*.md .claude/agents/
+mkdir -p ~/.claude/agents
+cp .claude/agents/*.md ~/.claude/agents/
 ```
 
-### Skills
+**Project-Level Installation** - Agents specific to this project:
 
-Skills are already installed in `/.claude/skills/` and available system-wide.
+Agents already in `.claude/agents/` - ready to use within this project.
+
+**Skills**: Already installed in `~/.claude/skills/` and available system-wide.
 
 ## Best Practices
 
@@ -415,18 +478,43 @@ Step 5: Use stakeholder-communicator skill to create update
 
 ### Agent not responding
 
-**Check**: Agent files installed correctly
+**For OpenCode users**:
 ```bash
-ls ~/.claude/agents/
-# Should see: feature-brainstormer.md, product-knowledge.md
+# Check agents exist in project
+ls .opencode/agents/
+# Should see: feature-brainstormer.md, product-knowledge.md, README.md
+
+# Verify .claude/ was removed
+ls -la | grep .claude
+# Should show nothing
 ```
 
-### Skill not found
+**For Claude Code users**:
+```bash
+# Check agents installed
+ls ~/.claude/agents/
+# Should see: feature-brainstormer.md, product-knowledge.md
+
+# Verify .opencode/ was removed
+ls -la | grep .opencode
+# Should show nothing
+```
+
+### Wrong format installed
+
+**Symptom**: Agents not loading or errors about format
+
+**Solution**:
+- Check which system you're using (OpenCode vs Claude Code)
+- Remove incompatible folder (`.claude/` for OpenCode, `.opencode/` for Claude Code)
+- Reinstall agents from correct folder
+
+### Skill not found (Claude Code only)
 
 **Check**: Skills are installed
 ```bash
 ls ~/.claude/skills/
-# Should see 9 skill directories
+# Should see 9+ skill directories
 ```
 
 ### Output quality issues
@@ -438,6 +526,11 @@ ls ~/.claude/skills/
 
 ## Version History
 
+- **v3.1.0** (2024-02-09): 🎉 Added dual-format support (OpenCode + Claude Code)
+  - OpenCode subagent format in `.opencode/agents/`
+  - Claude Code subagent format in `.claude/agents/`
+  - Enhanced auto-trigger patterns and examples
+  - Improved agent descriptions with trigger keywords
 - **v3.0.0** (2024-02-07): Simplified to 2 agents + 9 skills
 - **v2.0.0** (2024-02-06): Added skills integration, separated knowledge from workflow
 - **v1.0.0** (2024-01-XX): Initial agent system
@@ -481,8 +574,10 @@ Provided as a template for product management workflows. Customize for your team
 - `stakeholder-communicator` - Updates, announcements
 
 ### Key Documentation
-- `claude/agents/README.md` - Start here
+- `.claude/agents/README.md` or `.opencode/agents/README.md` - Start here
 - `docs/HOW_TO_USE_SKILLS.md` - Skills guide
 - `FINAL_SESSION_SUMMARY.md` - Complete summary
 
-**Get Started**: Read `claude/agents/README.md` for system overview and usage patterns.
+**Get Started**:
+- **OpenCode users**: Read `.opencode/agents/README.md`
+- **Claude Code users**: Read `.claude/agents/README.md`
