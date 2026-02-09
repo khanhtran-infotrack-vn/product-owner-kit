@@ -15,25 +15,35 @@ This system was simplified from 14 agents to 2 agents to reduce confusion and in
 ### 1. product-knowledge
 **Purpose**: Answer questions about your product by searching documentation
 
-**When to use**: When you need information from existing documentation
+**Auto-triggers on**:
+- "What features..." / "What's the status..." / "What did we decide..."
+- "Why did we..." / "What are the requirements..." / "What's in the roadmap..."
 
-**Usage**: `@product-knowledge - [your question]`
+**Usage**:
+- Auto-triggers on questions (see patterns above)
+- Explicit: `@product-knowledge - [your question]`
 
 **Capabilities**:
-- Searches all documentation using Glob, Grep, Read tools
+- Searches ALL documentation (product_documents/, brainstorm/, backlog/, sprints/, requirements/, roadmap/)
+- Uses Glob to find files, Grep to search content, Read to extract details
 - Never guesses - only answers based on documented information
-- Cites sources for every answer (file paths and line numbers)
-- Says "I don't know" when information is not documented
-- Uses `agile-product-owner` skill for product management context
+- Cites sources for every answer (specific file paths)
+- Says "I don't know" when information not documented (with search explanation)
+- Uses `agile-product-owner` skill for understanding agile terminology
 
-**Examples**:
+**Example Questions**:
 ```
-@product-knowledge - What are our Q2 priorities?
-@product-knowledge - What compliance requirements do we have for eSignature?
-@product-knowledge - What user stories are in the backlog for mobile features?
+"What AI features are we building for mobile?"
+→ Searches brainstorm/, backlog/, returns detailed answer with story IDs, estimates, sources
+
+"What's the status of Computer Vision Field Detection?"
+→ Searches backlog/, sprints/, returns status, timeline, dependencies, blockers
+
+"Why did we prioritize feature X over Y?"
+→ Searches brainstorming rationale, returns decision reasoning with alternatives considered
 ```
 
-**Model**: Inherits from main conversation
+**Model**: Sonnet (inherits from main conversation)
 **Tools**: Read, Bash, Grep, Glob
 **Skills Used**: `agile-product-owner`
 
@@ -42,36 +52,46 @@ This system was simplified from 14 agents to 2 agents to reduce confusion and in
 ### 2. feature-brainstormer
 **Purpose**: Facilitate creative brainstorming sessions with optional user story generation
 
-**When to use**: When exploring new features or solutions
+**Auto-triggers on**:
+- "Brainstorm..." / "Ideate..." / "Generate ideas..."
+- "What innovative features..." / "Explore improvements..."
 
-**Usage**: `@feature-brainstormer - Brainstorm [topic]`
+**Usage**:
+- Auto-triggers on brainstorming requests (see patterns above)
+- Explicit: `@feature-brainstormer - Brainstorm [topic]`
 
 **Capabilities**:
-- Facilitates creative brainstorming using structured methodology
+- Facilitates creative brainstorming using SCAMPER, "How Might We", User Story Mapping
 - Reads product documents for context (vision, strategy, user research)
 - Generates 50-100+ ideas across multiple categories
-- Evaluates feasibility and impact
-- Recommends top features based on criteria
-- **Optional**: Creates draft user stories with estimates after brainstorming
-- Outputs to `brainstorm/[feature-name]/` directory
+- Evaluates ideas with scores: User Value (1-5), Business Impact (1-5), Technical Feasibility (1-5)
+- Recommends top features based on evaluation
+- **Optional**: Creates draft user stories with story point estimates
+- Outputs to `brainstorm/[feature-name]/SUMMARY.md` and `ideas-raw.md`
 
 **Workflow**:
-1. Reads context from `product_documents/`
-2. Generates diverse ideas with feasibility scores
-3. Creates summary with top recommendations
-4. Asks: "Would you like me to create draft user stories?"
-5. If YES: Creates stories in `brainstorm/[feature-name]/user-stories/`
+1. Reads context from `product_documents/` and existing `brainstorm/` sessions
+2. Generates diverse ideas using structured techniques
+3. Evaluates each idea across 3 dimensions (15-point scale)
+4. Creates `SUMMARY.md` with comparative analysis and top recommendations
+5. **Asks**: "Would you like me to create draft user stories with estimates for top 5 ideas?"
+6. **If YES**: Creates INVEST-compliant stories in `brainstorm/[feature-name]/user-stories/`
 
-**Examples**:
+**Example Invocations**:
 ```
-@feature-brainstormer - Brainstorm AI-powered document preparation features
-@feature-brainstormer - Generate ideas for improving mobile signature UX
-@feature-brainstormer - Explore ways to reduce customer onboarding time
+"Brainstorm AI-powered document preparation features for mobile"
+→ Generates 50+ ideas, evaluates, creates SUMMARY.md, asks about user stories
+
+"Help me ideate ways to improve mobile signature experience"
+→ Uses SCAMPER technique, generates 7-10 improvements, ranks by value/feasibility
+
+"Generate ideas for reducing customer onboarding time"
+→ Applies "5 Whys" and "How Might We", creates solution categories, prioritizes
 ```
 
-**Model**: Inherits from main conversation
-**Tools**: Read, Write, Bash, Grep, Glob
-**Skills Used**: `agile-product-owner`
+**Model**: Sonnet (inherits from main conversation)
+**Tools**: Read, Write, Edit, Bash, Grep, Glob
+**Skills Used**: `agile-product-owner` (for user story creation)
 
 ---
 
