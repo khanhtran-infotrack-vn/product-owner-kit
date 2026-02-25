@@ -16,12 +16,14 @@ python3 .claude/skills/agile-product-owner/scripts/user_story_generator.py --sav
 ## Architecture
 
 ```
-2 Agents (workflow orchestration)   9 Skills (domain knowledge, called directly)
+2 Agents (workflow orchestration)   11 Skills (domain knowledge, called directly)
 ├── product-knowledge               ├── agile-product-owner   (INVEST, user stories)
 └── feature-brainstormer            ├── analytics-insights    (HEART, AARRR, A/B)
-                                    ├── backlog-manager       (story templates, epics)
-                                    ├── documentation-specialist (PRD, ADR, release notes)
-                                    ├── esign-domain-expert   (eIDAS, ESIGN, audit trails)
+    └── references/                 ├── backlog-manager       (story templates, epics)
+        ├── challenge-techniques.md ├── documentation-specialist (PRD, ADR, release notes)
+        └── user-interaction-       ├── esign-domain-expert   (eIDAS, ESIGN, audit trails)
+            patterns.md             ├── po-brainstorm         (brainstorm entry point)
+                                    ├── po-research           (research entry point)
                                     ├── prioritization-engine (RICE, MoSCoW, WSJF)
                                     ├── requirements-analyst  (extraction, gap analysis)
                                     ├── sprint-planner        (capacity, story selection)
@@ -100,6 +102,8 @@ Some skills have reference files with specific content — always use the correc
 ## Adding New Agents
 
 1. Create `.claude/agents/my-agent.md` with frontmatter (`name`, `description`, `tools`, `model`) and system prompt
-2. For user-level availability: copy to `~/.claude/agents/`
-3. The `description` field controls auto-trigger matching — make it specific
+2. The `description` field controls auto-trigger matching — make it specific
+3. Agent reference files (supporting docs the agent reads) go in `.claude/agents/references/`
+
+> Note: Never create agents at `~/.claude/agents/` during project work — all files stay in `.claude/`.
 

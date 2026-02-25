@@ -4,12 +4,12 @@ An AI-powered system for product management workflows built for Claude Code.
 
 ## Overview
 
-This system provides **2 core agents** for complex workflows and **9 specialized skills** for domain knowledge, helping Product Owners manage the entire product development lifecycle more efficiently.
+This system provides **2 core agents** for complex workflows and **11 specialized skills** for domain knowledge, helping Product Owners manage the entire product development lifecycle more efficiently.
 
 ### Philosophy: Simple, Powerful, Controllable
 
 - **2 Core Agents**: Handle complex workflows (Q&A and brainstorming)
-- **9 Skills**: Call directly for full control over frameworks and methodologies
+- **11 Skills**: Call directly for full control over frameworks and methodologies
 - **Clear Separation**: Agents orchestrate tools, skills provide knowledge
 
 ## Quick Start
@@ -21,17 +21,12 @@ This system provides **2 core agents** for complex workflows and **9 specialized
 git clone <repo-url>
 cd ProductOwnerOrchestration
 
-# 2. Install agents to user-level (recommended — available in all projects)
-mkdir -p ~/.claude/agents
-cp .claude/agents/feature-brainstormer.md ~/.claude/agents/
-cp .claude/agents/product-knowledge.md ~/.claude/agents/
-
-# OR use project-level installation (agents already in .claude/agents/)
+# 2. Agents are already installed at project level in .claude/agents/
 # No action needed — agents are ready to use within this project
 
-# 3. Verify skills are installed
-ls ~/.claude/skills/
-# Should show 9+ skill directories
+# 3. Verify agents are present
+ls .claude/agents/
+# Should show: feature-brainstormer.md, product-knowledge.md
 ```
 
 ### Basic Usage
@@ -71,16 +66,20 @@ Use the backlog-manager skill to create user stories for mobile signature featur
 #### 2. feature-brainstormer
 **Purpose**: Facilitate creative brainstorming sessions
 
-- Generates 50-100+ diverse ideas
-- Evaluates feasibility and impact
-- Optional: Creates user stories after brainstorming
+- Generates 50-100+ diverse ideas with anti-bias domain rotation
+- Clusters ideas into themes, evaluates with User Value/Business/Feasibility scores
+- Runs Challenge & Critique phase (pre-mortem, assumption stress-test, devil's advocate, constraint inversion)
+- Reconciles rankings after challenge
+- Optional: Creates INVEST-compliant user stories after brainstorming
 - Saves output to `brainstorm/[feature-name]/`
+
+**Mode flags**: `--quick` (skip clustering/challenge), `--challenge` (re-challenge existing ideas)
 
 **Usage**: `@feature-brainstormer - Brainstorm [topic]`
 
 ---
 
-### 9 Skills (Call Directly)
+### 11 Skills (Call Directly)
 
 | Skill | Purpose | When to Use |
 |-------|---------|-------------|
@@ -89,6 +88,8 @@ Use the backlog-manager skill to create user stories for mobile signature featur
 | **backlog-manager** | Story templates, epic breakdown | Creating stories, organizing backlog |
 | **documentation-specialist** | PRD/ADR templates, standards | Writing docs, PRDs, ADRs |
 | **esign-domain-expert** | eIDAS/ESIGN compliance, audit trails | eSignature features, compliance |
+| **po-brainstorm** | Brainstorm entry point — routes to feature-brainstormer | Starting a brainstorming session |
+| **po-research** | Research entry point — routes to product-knowledge | Querying product documentation |
 | **prioritization-engine** | RICE/MoSCoW/WSJF frameworks | Prioritizing features, ranking |
 | **requirements-analyst** | Requirements extraction, gap analysis | Analyzing requirements, finding gaps |
 | **sprint-planner** | Sprint planning, capacity calculation | Planning sprints, selecting stories |
@@ -129,6 +130,8 @@ Product Owner Orchestration System
 │   ├── backlog-manager         → Story templates, epic breakdown
 │   ├── documentation-specialist → PRD/ADR templates
 │   ├── esign-domain-expert     → eIDAS/ESIGN compliance
+│   ├── po-brainstorm           → Brainstorm entry point (routes to feature-brainstormer)
+│   ├── po-research             → Research entry point (routes to product-knowledge)
 │   ├── prioritization-engine   → RICE/MoSCoW/WSJF
 │   ├── requirements-analyst    → Requirements extraction
 │   ├── sprint-planner          → Sprint planning, capacity
@@ -210,14 +213,8 @@ Sprint goal: Deliver Computer Vision Field Detection MVP
 
 ### Essential Guides
 
-1. **[.claude/agents/README.md](.claude/agents/README.md)** - System overview and agent documentation
-2. **[docs/HOW_TO_USE_SKILLS.md](docs/HOW_TO_USE_SKILLS.md)** - Comprehensive skills usage guide
-
-### Workflow Guides
-
-- **[.claude/workflows/feature-development-workflow.md](.claude/workflows/feature-development-workflow.md)** - End-to-end feature development
-- **[.claude/workflows/brainstorming-workflow.md](.claude/workflows/brainstorming-workflow.md)** - Structured ideation process
-- **[.claude/workflows/sprint-planning-workflow.md](.claude/workflows/sprint-planning-workflow.md)** - Sprint planning best practices
+1. **[docs/HOW_TO_USE_SKILLS.md](docs/HOW_TO_USE_SKILLS.md)** - Comprehensive skills usage guide
+2. **[CLAUDE.md](CLAUDE.md)** - Repository structure and contribution guide
 
 ### Architecture Docs
 
@@ -233,22 +230,24 @@ ProductOwnerOrchestration/
 │
 ├── .claude/                           # Claude Code format
 │   ├── agents/
-│   │   ├── README.md                 # Agent system documentation
 │   │   ├── feature-brainstormer.md   # Brainstorming agent
-│   │   └── product-knowledge.md      # Q&A agent
+│   │   ├── product-knowledge.md      # Q&A agent
+│   │   └── references/               # Agent supporting docs
+│   │       ├── challenge-techniques.md
+│   │       └── user-interaction-patterns.md
 │   │
-│   ├── skills/
-│   │   ├── agile-product-owner/      # User stories, INVEST principles
-│   │   ├── analytics-insights/       # Metrics frameworks
-│   │   ├── backlog-manager/          # Story templates + references
-│   │   ├── documentation-specialist/ # PRD/ADR templates
-│   │   ├── esign-domain-expert/      # eSignature compliance + references
-│   │   ├── prioritization-engine/    # RICE/MoSCoW frameworks + references
-│   │   ├── requirements-analyst/     # Requirements quality + references
-│   │   ├── sprint-planner/           # Sprint planning methodology
-│   │   └── stakeholder-communicator/ # Communication templates
-│   │
-│   └── workflows/                    # Workflow guides
+│   └── skills/
+│       ├── agile-product-owner/      # User stories, INVEST principles
+│       ├── analytics-insights/       # Metrics frameworks
+│       ├── backlog-manager/          # Story templates + references
+│       ├── documentation-specialist/ # PRD/ADR templates
+│       ├── esign-domain-expert/      # eSignature compliance + references
+│       ├── po-brainstorm/            # Brainstorm entry point skill
+│       ├── po-research/              # Research entry point skill
+│       ├── prioritization-engine/    # RICE/MoSCoW frameworks + references
+│       ├── requirements-analyst/     # Requirements quality + references
+│       ├── sprint-planner/           # Sprint planning methodology
+│       └── stakeholder-communicator/ # Communication templates
 │
 ├── docs/
 │   ├── HOW_TO_USE_SKILLS.md         # Skills usage guide
@@ -409,20 +408,17 @@ Step 5: Use stakeholder-communicator skill to create update
 ### Agent not responding
 
 ```bash
-# Check agents are installed
-ls ~/.claude/agents/
-# Should see: feature-brainstormer.md, product-knowledge.md
-
 # Check project-level agents
 ls .claude/agents/
+# Should see: feature-brainstormer.md, product-knowledge.md
 ```
 
 ### Skill not found
 
 ```bash
-# Check skills are installed
-ls ~/.claude/skills/
-# Should see 9+ skill directories
+# Check project-level skills
+ls .claude/skills/
+# Should show 11+ skill directories
 ```
 
 ### Output quality issues
@@ -434,6 +430,7 @@ ls ~/.claude/skills/
 
 ## Version History
 
+- **v4.1.0** (2026-02-25): Added po-brainstorm + po-research entry-point skills, enhanced feature-brainstormer with challenge phases, anti-bias domain rotation, and sub-agent mode
 - **v4.0.0** (2026-02-25): Removed OpenCode support, Claude Code exclusive
 - **v3.1.0** (2024-02-09): Added dual-format support (OpenCode + Claude Code)
 - **v3.0.0** (2024-02-07): Simplified to 2 agents + 9 skills
@@ -452,8 +449,8 @@ This is a personal project template. Feel free to:
 
 For issues or questions:
 - Review documentation in `docs/`
-- Check agent MEMORY.md files: `~/.claude/agent-memory/`
 - Read skills usage guide: `docs/HOW_TO_USE_SKILLS.md`
+- Check `CLAUDE.md` for repository structure and conventions
 
 ## License
 
@@ -467,17 +464,19 @@ Provided as a template for product management workflows. Customize for your team
 - `@product-knowledge` - Q&A from documentation
 - `@feature-brainstormer` - Creative brainstorming
 
-### 9 Skills (Call Directly)
+### 11 Skills (Call Directly)
 - `agile-product-owner` - User stories, INVEST
 - `analytics-insights` - Metrics analysis
 - `backlog-manager` - Story creation
 - `documentation-specialist` - PRDs, ADRs
 - `esign-domain-expert` - eSignature compliance
+- `po-brainstorm` - Brainstorm entry point
+- `po-research` - Research entry point
 - `prioritization-engine` - RICE/MoSCoW/WSJF
 - `requirements-analyst` - Requirements extraction
 - `sprint-planner` - Sprint planning
 - `stakeholder-communicator` - Updates, announcements
 
 ### Key Documentation
-- `.claude/agents/README.md` - Start here
+- `CLAUDE.md` - Repository structure and guide
 - `docs/HOW_TO_USE_SKILLS.md` - Skills guide
