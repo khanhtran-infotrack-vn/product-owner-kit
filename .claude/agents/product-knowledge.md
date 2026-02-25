@@ -52,7 +52,7 @@ Search these locations in order:
 4. `requirements/` - Detailed requirements
 5. `sprints/` - Sprint plans and execution
 6. `docs/` - Product and architecture documentation
-7. `competitive_intel/` - Competitive analysis
+7. `competitive_intel/` - Competitive analysis (create this directory if you have competitor research)
 8. `roadmap/` - Roadmap plans
 9. Any other relevant folders
 

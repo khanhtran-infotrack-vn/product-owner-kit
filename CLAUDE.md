@@ -16,21 +16,25 @@ python3 .claude/skills/agile-product-owner/scripts/user_story_generator.py --sav
 ## Architecture
 
 ```
-2 Agents (workflow orchestration)   11 Skills (domain knowledge, called directly)
+2 Agents (workflow orchestration)   13 Skills (domain knowledge, called directly)
 ├── product-knowledge               ├── agile-product-owner   (INVEST, user stories)
-└── feature-brainstormer            ├── analytics-insights    (HEART, AARRR, A/B)
-    └── references/                 ├── backlog-manager       (story templates, epics)
-        ├── challenge-techniques.md ├── documentation-specialist (PRD, ADR, release notes)
-        └── user-interaction-       ├── esign-domain-expert   (eIDAS, ESIGN, audit trails)
-            patterns.md             ├── po-brainstorm         (brainstorm entry point)
-                                    ├── po-research           (research entry point)
-                                    ├── prioritization-engine (RICE, MoSCoW, WSJF)
+│   tools: Read, Glob, Grep         ├── analytics-insights    (HEART, AARRR, A/B)
+└── feature-brainstormer            ├── backlog-manager       (story templates, epics)
+    tools: Read,Write,Edit,         ├── documentation-specialist (PRD, ADR, release notes)
+           Bash,Grep,Glob           ├── esign-domain-expert   (eIDAS, ESIGN, audit trails)
+    └── references/                 ├── po-brainstorm         (brainstorm entry point)
+        ├── challenge-techniques.md ├── po-research           (research entry point)
+        └── user-interaction-       ├── po-risk-radar         (blind spot detector)
+            patterns.md             ├── prioritization-engine (RICE, MoSCoW, WSJF)
                                     ├── requirements-analyst  (extraction, gap analysis)
                                     ├── sprint-planner        (capacity, story selection)
-                                    └── stakeholder-communicator (updates, presentations)
+                                    ├── stakeholder-communicator (updates, presentations)
+                                    └── writing-clearly-and-concisely (docs, commits, UI text)
 ```
 
-**Agents** use Claude Code's subagent system (invoked with `@agent-name`). They have tool access and orchestrate multi-step workflows. Both agents use `agile-product-owner` as an embedded skill.
+**Agents** use Claude Code's subagent system (invoked with `@agent-name`). They have tool access declared in their `tools:` frontmatter field and orchestrate multi-step workflows.
+
+**Skill integration note**: When agents say they "use" a skill (e.g., `agile-product-owner`), this means the skill's knowledge is baked into the agent's system prompt as static context — not dynamically loaded at runtime. Skills are context files, not callable modules.
 
 **Skills** are loaded as context by Claude Code when referenced in prompts. They provide frameworks and templates but have no tool access themselves.
 
@@ -71,11 +75,16 @@ These directories hold **live product content** written by agents or users:
 | Directory | Purpose |
 |-----------|---------|
 | `product_documents/` | Product vision, user research, strategy — read by `@feature-brainstormer` for context |
-| `brainstorm/[feature]/` | Brainstorming outputs: `SUMMARY.md`, `IDEAS.md`, `NEXT_STEPS.md`, optional `user-stories/` |
+| `brainstorm/[feature]/` | Brainstorming outputs: `SUMMARY.md`, `IDEAS.md`, optional `user-stories/` |
 | `backlog/[feature]/` | User stories (`US-001.md`, etc.) and `README.md` index |
 | `sprints/sprint-N/` | Sprint plans, boards, standup templates |
 | `requirements/[feature]/` | Structured requirements documents |
-| `docs/` | Workflow guides, architecture docs, usage guides |
+| `roadmap/` | Quarterly roadmap plans |
+| `docs/decisions/` | Architecture Decision Records (ADRs) |
+| `docs/assumptions/` | Assumption ledger — tracked across brainstorming sessions |
+| `docs/` | Workflow guides, quickstart, architecture docs |
+
+See `docs/QUICKSTART.md` for the complete PO workflow guide.
 
 ## Key Skill Reference Files
 
