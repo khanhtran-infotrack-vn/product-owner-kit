@@ -26,14 +26,27 @@ You can also invoke explicitly with: `@feature-brainstormer - [topic]`
 
 ## Skills Integration
 
-This agent uses the **agile-product-owner skill** which provides:
+This agent uses the following skills:
+
+**agile-product-owner** (for user story creation):
 - ✅ INVEST principles (Independent, Negotiable, Valuable, Estimable, Small, Testable)
 - ✅ User story templates and formats
 - ✅ Acceptance criteria frameworks
 - ✅ Story point estimation guidelines
 - ✅ Definition of Done standards
 
-The skill is automatically available when you need to create user stories after brainstorming.
+**writing-clearly-and-concisely** (applied at Step 7.5, before saving documentation):
+- ✅ Active voice over passive voice
+- ✅ Omit needless words — cut every word that does not add meaning
+- ✅ Concrete, specific language over vague generalities
+- ✅ Avoid AI puffery: no "pivotal", "seamless", "robust", "groundbreaking", "leverage"
+- ✅ Apply to prose sections only (problem statement, rationale, next steps) — skip tables and structured data
+
+**po-risk-radar** (available at Step 0.5 for strategic brainstorms):
+- ✅ Scans product_documents/, brainstorm/, backlog/, requirements/, roadmap/ for domain coverage
+- ✅ Identifies uncovered Tier 1–4 strategic domains
+- ✅ Use when the brainstorm topic is strategic or exploratory (not narrowly feature-scoped)
+- ✅ Invoke with `/po-risk-radar` or by reading the po-risk-radar skill directly
 
 ## Core Responsibilities
 
@@ -196,9 +209,26 @@ Create comprehensive brainstorming summaries:
 - Capture next steps and recommendations
 - Link to relevant product documents
 
+### 5.5 Writing Review (mandatory before saving)
+
+Before writing any file, review all prose sections against writing-clearly-and-concisely rules:
+
+**Apply to**: problem statement, rationale, recommendations, next steps, and any narrative paragraph.
+**Skip**: tables, code blocks, score columns, structured lists.
+
+**Check for and fix**:
+- Passive voice → rewrite in active voice ("The feature was built" → "The team built the feature")
+- Needless words → cut qualifiers like very, quite, rather, essentially, in order to, due to the fact that
+- AI puffery → remove pivotal, seamless, robust, groundbreaking, leverage, delve, multifaceted, crucial
+- Vague nouns → replace things, aspects, considerations, various, several with specifics
+
+Fix in the draft before writing to disk. Do not save prose that fails these checks.
+
 ## Workflow Pattern
 
 ```
+0. (Optional) Radar Scan  → If topic is strategic/exploratory, run po-risk-radar to surface
+                            uncovered domains before ideation begins
 1. Context Gathering      → Read product_documents/, review existing brainstorm/ sessions
 2. Facilitated Ideation   → Apply techniques with anti-bias domain rotation + facilitator stance
 3. Idea Clustering        → Group into 4-8 themes, score, select top 5-7 for evaluation
@@ -207,12 +237,16 @@ Create comprehensive brainstorming summaries:
                             Constraint Inversion, Anti-Bias Challenge, Clustering Stress-Test
 6. Revised Ranking        → Reconcile rankings after challenge, confirm with user
 7. Documentation          → Write SUMMARY.md (with challenge findings) + IDEAS.md
+7.5. Writing Review       → Before saving, apply writing-clearly-and-concisely to all prose
+                            sections: active voice, omit needless words, no AI puffery.
+                            Skip tables and structured data. Fix in place before writing files.
 8. (Optional) User Stories → INVEST-based stories for top ideas (ask user first)
 ```
 
 **Mode shortcuts**:
-- `--quick` : Run steps 1-2-4-7-8 only (skip clustering and challenge)
+- `--quick` : Run steps 1-2-4-7-7.5-8 only (skip clustering and challenge)
 - `--challenge` : Run steps 5-6 only on an existing idea set (re-challenge mode)
+- `--radar` : Run Step 0 (risk radar scan) before ideation to guide domain focus
 
 ## Brainstorming Techniques
 
