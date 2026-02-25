@@ -290,10 +290,10 @@ Generate stories in `brainstorm/[feature_name]/user-stories/`:
 - **Source**: Generated from brainstorming session on [date]
 - **Brainstorm Rank**: #[X] (Score: [Y]/15)
 - **Status**: Draft - requires refinement with engineering team
-- **Next Steps**: 
-  1. Review with @requirements-analyst for detailed requirements
+- **Next Steps**:
+  1. Review with requirements-analyst skill for detailed requirements
   2. Validate estimates with engineering team
-  3. Add to backlog with @backlog-manager
+  3. Add to backlog with backlog-manager skill
 ```
 
 **Step 3: Create User Stories README**
@@ -346,16 +346,16 @@ These are ROUGH estimates. Refinement with the engineering team is required.
    - Refine acceptance criteria
    - Confirm estimates with engineers
 
-2. **Use @requirements-analyst** (if needed)
+2. **Use requirements-analyst skill** (if needed)
    - Create detailed requirements for complex stories
    - Document edge cases and error scenarios
 
-3. **Use @backlog-manager** (when ready)
+3. **Use backlog-manager skill** (when ready)
    - Add refined stories to official backlog
    - Prioritize against existing work
    - Plan sprints
 
-4. **Use @sprint-planner** (when stories are ready)
+4. **Use sprint-planner skill** (when stories are ready)
    - Plan sprint with committed stories
    - Allocate capacity
    - Set sprint goals
@@ -377,7 +377,7 @@ These are ROUGH estimates. Refinement with the engineering team is required.
 
 After creating user stories, tell the user:
 
-> "I've created [X] draft user stories in `brainstorm/[feature_name]/user-stories/` with preliminary story point estimates based on the technical feasibility scores from our evaluation. 
+> "I've created [X] draft user stories in `brainstorm/[feature_name]/user-stories/` with preliminary story point estimates based on the technical feasibility scores from our evaluation.
 >
 > These stories follow INVEST principles and include:
 > - User story format (As a... I want... So that...)
@@ -389,8 +389,8 @@ After creating user stories, tell the user:
 >
 > **Suggested next steps**:
 > 1. Review stories with your team (1-2 hour refinement session)
-> 2. Use @requirements-analyst for complex stories needing detailed requirements
-> 3. Use @backlog-manager to add refined stories to official backlog"
+> 2. Use requirements-analyst skill for complex stories needing detailed requirements
+> 3. Use backlog-manager skill to add refined stories to official backlog"
 
 ### If User Says NO:
 
@@ -582,24 +582,24 @@ Ask these questions to deepen brainstorming:
 - "What dependencies exist?"
 - "Can we do this incrementally?"
 
-## Collaboration with Other Agents
+## Collaboration with Skills and Agents
 
-After brainstorming, signal to relevant agents:
+After brainstorming, use the appropriate skills for next steps:
 
 **For Validation**:
-- **@user-research**: "Brainstormed mobile offline mode - need validation with field workers"
-- **@competitive-intel**: "Generated 5 signature UX ideas - check competitive positioning"
-- **@analytics-insights**: "Proposed feature X - analyze current user behavior data"
+- **analytics-insights skill**: Analyze current user behavior data to validate ideas
+- **esign-domain-expert skill**: Validate compliance implications for signature feature ideas
+- Conduct user interviews or web research for competitive positioning
 
 **For Next Steps**:
-- **@requirements-analyst**: "Top idea selected - need detailed requirements analysis"
-- **@backlog-manager**: "3 feature concepts ready - create epic and stories"
-- **@risk-assessor**: "Complex feature brainstormed - assess technical risks"
-- **@esign-domain-expert**: "Signature feature ideas - validate compliance implications"
+- **requirements-analyst skill**: Create detailed requirements for top ideas
+- **backlog-manager skill**: Create epic and stories from feature concepts
+- **prioritization-engine skill**: Rank ideas against existing backlog
+- Consult engineering team for technical risk assessment
 
 **For Documentation**:
-- **@documentation-agent**: "Brainstorming complete - create feature specification"
-- **@stakeholder-communicator**: "Feature concept approved - draft announcement for stakeholders"
+- **documentation-specialist skill**: Create feature specification from brainstorming output
+- **stakeholder-communicator skill**: Draft announcement for stakeholders when concept is approved
 
 ## Session Types
 
@@ -682,8 +682,8 @@ Agent:
    - Creates user-stories/README.md with summary
    - Informs user about draft stories location
 10. Recommends next steps:
-   - "@requirements-analyst for detailed requirements"
-   - "@backlog-manager to add refined stories to backlog"
+   - "Use requirements-analyst skill for detailed requirements"
+   - "Use backlog-manager skill to add refined stories to backlog"
 ```
 
 ---

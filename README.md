@@ -1,6 +1,6 @@
 # Product Owner Orchestration System
 
-A streamlined AI-powered system for product management workflows with **dual-format support** for both Claude Code and OpenCode.
+An AI-powered system for product management workflows built for Claude Code.
 
 ## Overview
 
@@ -11,65 +11,28 @@ This system provides **2 core agents** for complex workflows and **9 specialized
 - **2 Core Agents**: Handle complex workflows (Q&A and brainstorming)
 - **9 Skills**: Call directly for full control over frameworks and methodologies
 - **Clear Separation**: Agents orchestrate tools, skills provide knowledge
-- **Dual Format**: Works with both Claude Code and OpenCode subagent systems
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
-**IMPORTANT**: This repository contains agents in **two formats**:
-- `.claude/agents/` - Claude Code subagent format
-- `.opencode/agents/` - OpenCode subagent format
-
-**Choose your format based on your environment:**
-
-#### For OpenCode Users
-
 ```bash
 # 1. Clone repository
 git clone <repo-url>
 cd ProductOwnerOrchestration
 
-# 2. REMOVE Claude Code agents (not compatible)
-rm -rf .claude/
-
-# 3. OpenCode automatically loads agents from .opencode/agents/
-# No manual installation needed - agents are ready to use!
-
-# 4. Verify agents are available
-ls .opencode/agents/
-# Should show: feature-brainstormer.md, product-knowledge.md, README.md
-```
-
-#### For Claude Code Users
-
-```bash
-# 1. Clone repository
-git clone <repo-url>
-cd ProductOwnerOrchestration
-
-# 2. REMOVE OpenCode agents (not compatible)
-rm -rf .opencode/
-
-# 3. Install agents to user-level (recommended)
+# 2. Install agents to user-level (recommended — available in all projects)
 mkdir -p ~/.claude/agents
 cp .claude/agents/feature-brainstormer.md ~/.claude/agents/
 cp .claude/agents/product-knowledge.md ~/.claude/agents/
 
-# OR install project-level (specific to this project)
-# Agents already in .claude/agents/ - no action needed
+# OR use project-level installation (agents already in .claude/agents/)
+# No action needed — agents are ready to use within this project
 
-# 4. Verify skills are installed
+# 3. Verify skills are installed
 ls ~/.claude/skills/
 # Should show 9+ skill directories
 ```
-
-### ⚙️ Installation Options Summary
-
-| Environment | Keep | Remove | Installation |
-|-------------|------|--------|--------------|
-| **OpenCode** | `.opencode/` | `.claude/` | Auto-loaded from `.opencode/agents/` |
-| **Claude Code** | `.claude/` | `.opencode/` | Copy to `~/.claude/agents/` (user-level) |
 
 ### Basic Usage
 
@@ -135,15 +98,15 @@ Use the backlog-manager skill to create user stories for mobile signature featur
 
 ### What This System Can Do
 
-- ✅ **Answer Questions**: Search all documentation with citations
-- ✅ **Generate Ideas**: 50-100+ creative ideas per brainstorming session
-- ✅ **Create User Stories**: INVEST-compliant stories with acceptance criteria
-- ✅ **Plan Sprints**: Calculate capacity, select stories, define goals
-- ✅ **Prioritize Features**: RICE/MoSCoW/WSJF scoring with rationale
-- ✅ **Analyze Requirements**: Extract functional/non-functional requirements
-- ✅ **Write Documentation**: PRDs, ADRs, release notes with templates
-- ✅ **eSignature Compliance**: eIDAS 2.0 and ESIGN Act guidance
-- ✅ **Stakeholder Updates**: Executive summaries, sprint reviews
+- **Answer Questions**: Search all documentation with citations
+- **Generate Ideas**: 50-100+ creative ideas per brainstorming session
+- **Create User Stories**: INVEST-compliant stories with acceptance criteria
+- **Plan Sprints**: Calculate capacity, select stories, define goals
+- **Prioritize Features**: RICE/MoSCoW/WSJF scoring with rationale
+- **Analyze Requirements**: Extract functional/non-functional requirements
+- **Write Documentation**: PRDs, ADRs, release notes with templates
+- **eSignature Compliance**: eIDAS 2.0 and ESIGN Act guidance
+- **Stakeholder Updates**: Executive summaries, sprint reviews
 
 ### Time Savings
 
@@ -247,15 +210,14 @@ Sprint goal: Deliver Computer Vision Field Detection MVP
 
 ### Essential Guides
 
-1. **[claude/agents/README.md](claude/agents/README.md)** - System overview and agent documentation
+1. **[.claude/agents/README.md](.claude/agents/README.md)** - System overview and agent documentation
 2. **[docs/HOW_TO_USE_SKILLS.md](docs/HOW_TO_USE_SKILLS.md)** - Comprehensive skills usage guide
-3. **[FINAL_SESSION_SUMMARY.md](FINAL_SESSION_SUMMARY.md)** - Complete implementation summary
 
 ### Workflow Guides
 
-- **[docs/workflows/feature-development-workflow.md](docs/workflows/feature-development-workflow.md)** - End-to-end feature development
-- **[docs/workflows/brainstorming-workflow.md](docs/workflows/brainstorming-workflow.md)** - Structured ideation process
-- **[docs/workflows/sprint-planning-workflow.md](docs/workflows/sprint-planning-workflow.md)** - Sprint planning best practices
+- **[.claude/workflows/feature-development-workflow.md](.claude/workflows/feature-development-workflow.md)** - End-to-end feature development
+- **[.claude/workflows/brainstorming-workflow.md](.claude/workflows/brainstorming-workflow.md)** - Structured ideation process
+- **[.claude/workflows/sprint-planning-workflow.md](.claude/workflows/sprint-planning-workflow.md)** - Sprint planning best practices
 
 ### Architecture Docs
 
@@ -268,38 +230,28 @@ Sprint goal: Deliver Computer Vision Field Detection MVP
 ```
 ProductOwnerOrchestration/
 ├── README.md                          # This file
-├── FINAL_SESSION_SUMMARY.md          # Complete session summary
 │
-├── .claude/                           ⚠️ CLAUDE CODE FORMAT
+├── .claude/                           # Claude Code format
 │   ├── agents/
 │   │   ├── README.md                 # Agent system documentation
 │   │   ├── feature-brainstormer.md   # Brainstorming agent
 │   │   └── product-knowledge.md      # Q&A agent
 │   │
-│   └── skills/
-│       ├── agile-product-owner/      # User stories, INVEST principles
-│       ├── analytics-insights/       # Metrics frameworks
-│       ├── backlog-manager/          # Story templates + references
-│       ├── documentation-specialist/ # PRD/ADR templates
-│       ├── esign-domain-expert/      # eSignature compliance + references
-│       ├── prioritization-engine/    # RICE/MoSCoW frameworks + references
-│       ├── requirements-analyst/     # Requirements quality + references
-│       ├── sprint-planner/           # Sprint planning methodology
-│       └── stakeholder-communicator/ # Communication templates
-│
-├── .opencode/                         ⚠️ OPENCODE FORMAT
-│   └── agents/
-│       ├── README.md                 # Agent system documentation
-│       ├── feature-brainstormer.md   # Brainstorming agent (OpenCode format)
-│       └── product-knowledge.md      # Q&A agent (OpenCode format)
+│   ├── skills/
+│   │   ├── agile-product-owner/      # User stories, INVEST principles
+│   │   ├── analytics-insights/       # Metrics frameworks
+│   │   ├── backlog-manager/          # Story templates + references
+│   │   ├── documentation-specialist/ # PRD/ADR templates
+│   │   ├── esign-domain-expert/      # eSignature compliance + references
+│   │   ├── prioritization-engine/    # RICE/MoSCoW frameworks + references
+│   │   ├── requirements-analyst/     # Requirements quality + references
+│   │   ├── sprint-planner/           # Sprint planning methodology
+│   │   └── stakeholder-communicator/ # Communication templates
+│   │
+│   └── workflows/                    # Workflow guides
 │
 ├── docs/
 │   ├── HOW_TO_USE_SKILLS.md         # Skills usage guide
-│   │
-│   ├── workflows/
-│   │   ├── feature-development-workflow.md
-│   │   ├── brainstorming-workflow.md
-│   │   └── sprint-planning-workflow.md
 │   │
 │   ├── architecture/
 │   │   ├── system-design.md
@@ -317,98 +269,76 @@ ProductOwnerOrchestration/
 └── sprints/                         # Sprint plans
 ```
 
-**⚠️ Important**:
-- **OpenCode users**: Keep `.opencode/`, remove `.claude/`
-- **Claude Code users**: Keep `.claude/`, remove `.opencode/`
-
 ## Testing & Validation
 
 ### End-to-End Test Results
 
 **Test Scenario**: AI Mobile Document Preparation Feature
 
-1. ✅ Created product context documents
-2. ✅ Brainstormed 65+ ideas with feasibility scores
-3. ✅ Created 3 INVEST-compliant user stories
-4. ✅ All artifacts production-ready
+1. Created product context documents
+2. Brainstormed 65+ ideas with feasibility scores
+3. Created 3 INVEST-compliant user stories
+4. All artifacts production-ready
 
 **Timeline**: 1.5 hours (vs 4-6 hours manual)
 
-**Quality**: ⭐⭐⭐⭐⭐ Production-ready output
-
 ### Validated Capabilities
 
-- ✅ Agent-skill integration working flawlessly
-- ✅ Document search with 100% citation accuracy
-- ✅ Never guesses - only answers from docs
-- ✅ INVEST-compliant user stories
-- ✅ Feasibility scoring and prioritization
-- ✅ Optional story creation after brainstorming
+- Agent-skill integration working
+- Document search with 100% citation accuracy
+- Never guesses - only answers from docs
+- INVEST-compliant user stories
+- Feasibility scoring and prioritization
+- Optional story creation after brainstorming
 
 ## Benefits
 
 ### Why Use This System?
 
 **Efficiency**:
-- ⚡ 45% faster brainstorming sessions
-- ⚡ 80-90% faster documentation search
-- ⚡ 60-75% faster end-to-end feature planning
+- 45% faster brainstorming sessions
+- 80-90% faster documentation search
+- 60-75% faster end-to-end feature planning
 
 **Quality**:
-- ✅ INVEST-compliant user stories
-- ✅ Framework-based prioritization (RICE/MoSCoW/WSJF)
-- ✅ Compliance-aware (eIDAS 2.0, ESIGN Act)
-- ✅ Professional documentation standards
+- INVEST-compliant user stories
+- Framework-based prioritization (RICE/MoSCoW/WSJF)
+- Compliance-aware (eIDAS 2.0, ESIGN Act)
+- Professional documentation standards
 
 **Control**:
-- 🎛️ You decide which skills to apply
-- 🎛️ You provide context and constraints
-- 🎛️ You see the methodology explicitly
-- 🎛️ No "magic" - transparent processes
+- You decide which skills to apply
+- You provide context and constraints
+- You see the methodology explicitly
+- No "magic" - transparent processes
 
 **Simplicity**:
-- 💡 Only 2 agents to remember
-- 💡 Skills called directly when needed
-- 💡 Clear mental model
-- 💡 Easy to onboard team members
+- Only 2 agents to remember
+- Skills called directly when needed
+- Clear mental model
+- Easy to onboard team members
 
 ## Requirements
 
-### For OpenCode
-- **OpenCode**: Latest version with subagent support
-- **Model**: Works with claude-sonnet-4.5 or compatible models
-- **Environment**: macOS/Linux/Windows with bash support
-- **Note**: Agents auto-load from `.opencode/agents/` (no manual installation needed)
-
-### For Claude Code
 - **Claude Code**: Latest version with subagent and skills support
-- **Model**: Works with claude-sonnet-4.5 or compatible models
+- **Model**: Works with claude-sonnet-4-5 or compatible models
 - **Environment**: macOS/Linux/Windows with bash support
 - **Skills**: Requires skills installed in `~/.claude/skills/`
 
 ## Configuration
 
-### OpenCode Setup
+### User-Level Installation (Recommended)
 
-**Agents**: Auto-loaded from `.opencode/agents/` (already configured)
-
-**Skills**: Activate skills by calling them directly in prompts:
-```
-Use the backlog-manager skill to create user stories...
-```
-
-### Claude Code Setup
-
-**User-Level Installation (Recommended)** - Agents available in all projects:
+Agents available in all projects:
 
 ```bash
 mkdir -p ~/.claude/agents
 cp .claude/agents/*.md ~/.claude/agents/
 ```
 
-**Project-Level Installation** - Agents specific to this project:
+### Project-Level Installation
 
-Agents already in `.claude/agents/` - ready to use within this project.
+Agents already in `.claude/agents/` — ready to use within this project.
 
 **Skills**: Already installed in `~/.claude/skills/` and available system-wide.
 
@@ -478,41 +408,19 @@ Step 5: Use stakeholder-communicator skill to create update
 
 ### Agent not responding
 
-**For OpenCode users**:
 ```bash
-# Check agents exist in project
-ls .opencode/agents/
-# Should see: feature-brainstormer.md, product-knowledge.md, README.md
-
-# Verify .claude/ was removed
-ls -la | grep .claude
-# Should show nothing
-```
-
-**For Claude Code users**:
-```bash
-# Check agents installed
+# Check agents are installed
 ls ~/.claude/agents/
 # Should see: feature-brainstormer.md, product-knowledge.md
 
-# Verify .opencode/ was removed
-ls -la | grep .opencode
-# Should show nothing
+# Check project-level agents
+ls .claude/agents/
 ```
 
-### Wrong format installed
+### Skill not found
 
-**Symptom**: Agents not loading or errors about format
-
-**Solution**:
-- Check which system you're using (OpenCode vs Claude Code)
-- Remove incompatible folder (`.claude/` for OpenCode, `.opencode/` for Claude Code)
-- Reinstall agents from correct folder
-
-### Skill not found (Claude Code only)
-
-**Check**: Skills are installed
 ```bash
+# Check skills are installed
 ls ~/.claude/skills/
 # Should see 9+ skill directories
 ```
@@ -526,11 +434,8 @@ ls ~/.claude/skills/
 
 ## Version History
 
-- **v3.1.0** (2024-02-09): 🎉 Added dual-format support (OpenCode + Claude Code)
-  - OpenCode subagent format in `.opencode/agents/`
-  - Claude Code subagent format in `.claude/agents/`
-  - Enhanced auto-trigger patterns and examples
-  - Improved agent descriptions with trigger keywords
+- **v4.0.0** (2026-02-25): Removed OpenCode support, Claude Code exclusive
+- **v3.1.0** (2024-02-09): Added dual-format support (OpenCode + Claude Code)
 - **v3.0.0** (2024-02-07): Simplified to 2 agents + 9 skills
 - **v2.0.0** (2024-02-06): Added skills integration, separated knowledge from workflow
 - **v1.0.0** (2024-01-XX): Initial agent system
@@ -546,7 +451,7 @@ This is a personal project template. Feel free to:
 ## Support
 
 For issues or questions:
-- Review documentation in `/docs/`
+- Review documentation in `docs/`
 - Check agent MEMORY.md files: `~/.claude/agent-memory/`
 - Read skills usage guide: `docs/HOW_TO_USE_SKILLS.md`
 
@@ -574,10 +479,5 @@ Provided as a template for product management workflows. Customize for your team
 - `stakeholder-communicator` - Updates, announcements
 
 ### Key Documentation
-- `.claude/agents/README.md` or `.opencode/agents/README.md` - Start here
+- `.claude/agents/README.md` - Start here
 - `docs/HOW_TO_USE_SKILLS.md` - Skills guide
-- `FINAL_SESSION_SUMMARY.md` - Complete summary
-
-**Get Started**:
-- **OpenCode users**: Read `.opencode/agents/README.md`
-- **Claude Code users**: Read `.claude/agents/README.md`

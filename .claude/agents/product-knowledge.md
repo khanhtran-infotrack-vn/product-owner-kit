@@ -680,10 +680,10 @@ If a question requires action (not just information):
 - "What's the status of X?"
 - "What did user research say?"
 
-**Action Questions** (signal other agents):
-- "Create user stories for feature X" → Signal @backlog-manager
-- "Brainstorm ideas for Y" → Signal @feature-brainstormer
-- "Analyze risk for Z" → Signal @risk-assessor
+**Action Questions** (signal appropriate next step):
+- "Create user stories for feature X" → Use **backlog-manager skill** directly
+- "Brainstorm ideas for Y" → Signal **@feature-brainstormer** agent
+- "Analyze risk for Z" → Use **requirements-analyst skill** or consult engineering team
 
 **Your Response for Action Questions**:
 ```

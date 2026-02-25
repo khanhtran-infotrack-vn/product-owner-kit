@@ -3,8 +3,8 @@
 ## Overview
 This workflow demonstrates the complete feature development process using the Product Owner Orchestration System, from initial brainstorming through sprint planning and backlog management.
 
-**Time to Complete**: 2-3 days (including validation and refinement)  
-**Agents Involved**: 4-6 agents  
+**Time to Complete**: 2-3 days (including validation and refinement)
+**Involved**: 1 agent (@feature-brainstormer) + 4 skills (requirements-analyst, backlog-manager, sprint-planner, documentation-specialist)
 **Output Artifacts**: Brainstorming summary, user stories, sprint plan, documentation
 
 ---
@@ -64,27 +64,26 @@ This workflow demonstrates the complete feature development process using the Pr
 ### Stage 2: Competitive Analysis (Optional)
 **Goal**: Understand competitor capabilities and positioning strategy
 
-**When to Use**: 
+**When to Use**:
 - New feature category for your product
 - Competitive differentiation is critical
 - Uncertain about market standards
 
 **Steps**:
 
-1. **Invoke Competitive Intelligence Agent**
+1. **Research Competitor Capabilities** (manual research or web search)
    ```
-   @competitive-intel - Analyze competitor capabilities for [feature area]
    Context: brainstorm/[feature-name]/SUMMARY.md
-   
+
    Focus areas:
    - What features do DocuSign, Adobe Sign, HelloSign offer?
    - How are they positioning AI capabilities?
    - What are gaps we can exploit?
    ```
 
-2. **Review Competitive Analysis**
+2. **Document Competitive Analysis**
    ```
-   Output location: competitive_intel/[feature-name]/
+   Output location: product_documents/competitive-[feature-name]/
    Files:
    - competitor-matrix.md (feature comparison)
    - positioning-strategy.md (differentiation recommendations)
@@ -104,11 +103,11 @@ This workflow demonstrates the complete feature development process using the Pr
 
 **Steps**:
 
-1. **Invoke Requirements Analyst Agent**
+1. **Use Requirements Analyst Skill**
    ```
-   @requirements-analyst - Create detailed requirements for features in
+   Use the requirements-analyst skill to create detailed requirements for features in
    brainstorm/ai-mobile-document-prep/SUMMARY.md
-   
+
    Focus on top 5 features:
    1. Computer Vision Field Detection
    2. Confidence Scores + Visual Indicators
@@ -147,11 +146,11 @@ This workflow demonstrates the complete feature development process using the Pr
 
 **Steps**:
 
-1. **Invoke Backlog Manager Agent**
+1. **Use Backlog Manager Skill**
    ```
-   @backlog-manager - Create user stories for features in
+   Use the backlog-manager skill to create user stories for features in
    brainstorm/ai-mobile-document-prep/SUMMARY.md
-   
+
    Use requirements from: requirements/ai-mobile-document-prep/
    Create stories for Phase 1 features (3-month timeline)
    ```
@@ -202,17 +201,17 @@ This workflow demonstrates the complete feature development process using the Pr
 
 **Steps**:
 
-1. **Invoke Sprint Planner Agent**
+1. **Use Sprint Planner Skill**
    ```
-   @sprint-planner - Create 2-week sprint plan using stories from
+   Use the sprint-planner skill to create a 2-week sprint plan using stories from
    backlog/ai-mobile-document-prep/
-   
+
    Team capacity:
    - 2 ML engineers (80 hours each)
    - 3 mobile engineers (80 hours each)
    - 2 backend engineers (80 hours each)
    - 1 QA engineer (80 hours)
-   
+
    Sprint goal: Deliver Computer Vision Field Detection MVP
    ```
 
@@ -246,10 +245,10 @@ This workflow demonstrates the complete feature development process using the Pr
 
 **Steps**:
 
-1. **Invoke Documentation Agent**
+1. **Use Documentation Specialist Skill**
    ```
-   @documentation-agent - Create documentation for features in sprint-1/
-   
+   Use the documentation-specialist skill to create documentation for features in sprint-1/
+
    Document types needed:
    - Technical design (architecture, APIs, data models)
    - User guide (how to use AI document preparation)
@@ -289,29 +288,29 @@ This workflow demonstrates the complete feature development process using the Pr
 
 ### Day 1: Discovery
 1. ✅ **Brainstorming** (2 hours)
-   - Agent: feature-brainstormer
+   - Agent: @feature-brainstormer
    - Output: 65+ ideas, top 15 prioritized, 3-phase roadmap
-   
+
 2. ✅ **Competitive Analysis** (2 hours, parallel with requirements)
-   - Agent: competitive-intel
+   - Manual research / web search
    - Output: Competitor matrix, positioning strategy
 
 3. ✅ **Requirements Analysis** (3 hours, parallel with competitive)
-   - Agent: requirements-analyst
+   - Skill: requirements-analyst
    - Output: Functional/non-functional requirements, acceptance criteria
 
 ### Day 2: Planning
 4. ✅ **Backlog Creation** (2 hours)
-   - Agent: backlog-manager
+   - Skill: backlog-manager
    - Output: 3 user stories, INVEST-validated, story points
 
-5. ✅ **Sprint Planning** (1 hour agent + 2 hours team meeting)
-   - Agent: sprint-planner
+5. ✅ **Sprint Planning** (1 hour + 2 hours team meeting)
+   - Skill: sprint-planner
    - Output: Sprint plan, capacity allocation, goals
 
 ### Day 3: Documentation & Refinement
 6. ✅ **Documentation** (2 hours)
-   - Agent: documentation-agent
+   - Skill: documentation-specialist
    - Output: Technical design, user guides, API docs
 
 7. ✅ **Refinement** (4 hours, manual)
@@ -365,9 +364,9 @@ Sprint 2: Build v2 → Analytics → ...
 
 **Dependency Flow**:
 ```
-brainstorming → requirements → backlog → sprint planning
+brainstorming (@feature-brainstormer) → requirements (skill) → backlog (skill) → sprint planning (skill)
                 ↓
-           competitive-intel (parallel with requirements)
+           competitive analysis (manual/web research, parallel with requirements)
 ```
 
 ### 3. Validate Agent Outputs
@@ -444,7 +443,6 @@ After completing this workflow:
 
 ## Related Workflows
 
-- [Strategic Planning Workflow](./strategic-planning-workflow.md) - Quarterly roadmap creation
 - [Brainstorming Workflow](./brainstorming-workflow.md) - Deep dive on ideation process
 - [Sprint Planning Workflow](./sprint-planning-workflow.md) - Detailed sprint planning steps
 

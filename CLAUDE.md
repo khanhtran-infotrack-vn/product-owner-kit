@@ -1,0 +1,105 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## What This Repository Is
+
+A **prompt-engineering / markdown repository** — there is no source code to build, compile, or test. The "code" is Claude Code agent and skill definitions (markdown files with YAML frontmatter) plus product management artifacts. There are no build, lint, or test commands.
+
+The one executable utility is:
+```bash
+python3 .claude/skills/agile-product-owner/scripts/user_story_generator.py          # generate stories
+python3 .claude/skills/agile-product-owner/scripts/user_story_generator.py sprint 30 # plan sprint
+python3 .claude/skills/agile-product-owner/scripts/user_story_generator.py --save    # save to docs/user-stories/
+```
+
+## Architecture
+
+```
+2 Agents (workflow orchestration)   9 Skills (domain knowledge, called directly)
+├── product-knowledge               ├── agile-product-owner   (INVEST, user stories)
+└── feature-brainstormer            ├── analytics-insights    (HEART, AARRR, A/B)
+                                    ├── backlog-manager       (story templates, epics)
+                                    ├── documentation-specialist (PRD, ADR, release notes)
+                                    ├── esign-domain-expert   (eIDAS, ESIGN, audit trails)
+                                    ├── prioritization-engine (RICE, MoSCoW, WSJF)
+                                    ├── requirements-analyst  (extraction, gap analysis)
+                                    ├── sprint-planner        (capacity, story selection)
+                                    └── stakeholder-communicator (updates, presentations)
+```
+
+**Agents** use Claude Code's subagent system (invoked with `@agent-name`). They have tool access and orchestrate multi-step workflows. Both agents use `agile-product-owner` as an embedded skill.
+
+**Skills** are loaded as context by Claude Code when referenced in prompts. They provide frameworks and templates but have no tool access themselves.
+
+## File Formats
+
+### Agent format (`.claude/agents/*.md`)
+```markdown
+---
+name: agent-name
+description: One-line description used for auto-trigger matching — this is critical
+tools: Read, Write, Edit, Bash, Grep, Glob
+model: sonnet
+---
+
+System prompt in markdown...
+```
+
+The `description` field is parsed by Claude Code to decide when to auto-invoke the agent. Keep it precise with trigger keywords.
+
+### Skill format (`.claude/skills/<name>/SKILL.md`)
+```markdown
+---
+name: skill-name
+description: When to invoke this skill (used by skill registry)
+---
+
+# Skill Name
+
+Domain knowledge, frameworks, templates...
+```
+
+Skills with reference files keep supporting material in `references/` subdirectories. Skills with scripts keep utility code in `scripts/`.
+
+## Content Directories (Product Management Artifacts)
+
+These directories hold **live product content** written by agents or users:
+
+| Directory | Purpose |
+|-----------|---------|
+| `product_documents/` | Product vision, user research, strategy — read by `@feature-brainstormer` for context |
+| `brainstorm/[feature]/` | Brainstorming outputs: `SUMMARY.md`, `IDEAS.md`, `NEXT_STEPS.md`, optional `user-stories/` |
+| `backlog/[feature]/` | User stories (`US-001.md`, etc.) and `README.md` index |
+| `sprints/sprint-N/` | Sprint plans, boards, standup templates |
+| `requirements/[feature]/` | Structured requirements documents |
+| `docs/` | Workflow guides, architecture docs, usage guides |
+
+## Key Skill Reference Files
+
+Some skills have reference files with specific content — always use the correct filenames:
+
+| Skill | Reference file(s) |
+|-------|------------------|
+| `backlog-manager` | `references/story-templates.md`, `references/epic-breakdown-example.md` |
+| `esign-domain-expert` | `references/domain-knowledge.md` |
+| `prioritization-engine` | `references/frameworks.md` |
+| `requirements-analyst` | `references/examples.md` |
+
+## Document Skills
+
+`.claude/skills/document-skills/` contains four additional skills for document manipulation (docx, pdf, pptx, xlsx). These are separate from the product management skills and have their own scripts and OOXML reference schemas. They are not listed in the 9 core skills count.
+
+## Adding New Skills
+
+1. Create directory: `.claude/skills/my-skill/`
+2. Create `SKILL.md` with YAML frontmatter (`name`, `description`) and markdown knowledge body
+3. Optionally add `references/` for supporting materials or `scripts/` for utilities
+4. Reference the skill by name in prompts; no registration step required
+
+## Adding New Agents
+
+1. Create `.claude/agents/my-agent.md` with frontmatter (`name`, `description`, `tools`, `model`) and system prompt
+2. For user-level availability: copy to `~/.claude/agents/`
+3. The `description` field controls auto-trigger matching — make it specific
+

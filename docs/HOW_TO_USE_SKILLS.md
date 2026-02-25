@@ -211,7 +211,7 @@ Feature context:
 - Audit trail requirements for compliance
 - Identity verification standards (KYC)
 - Electronic signature workflows and UX patterns
-- Compliance reference: references/compliance-requirements.md
+- Compliance reference: references/domain-knowledge.md
 
 **When to use**:
 - Designing eSignature features
@@ -225,7 +225,7 @@ Feature context:
 Design the audit trail system for our signature workflow to ensure compliance.
 
 Use the esign-domain-expert skill to:
-1. Reference compliance requirements from esign-domain-expert/references/compliance-requirements.md
+1. Reference compliance requirements from esign-domain-expert/references/domain-knowledge.md
 2. Apply eIDAS 2.0 standards (EU jurisdiction)
 3. Apply ESIGN Act requirements (US jurisdiction)
 4. Define required audit trail fields for each signature type (SES, AES, QES)
@@ -306,7 +306,7 @@ Output ranking to: backlog/ai-mobile-prep/PRIORITY_RANKING.md
 - Gap analysis methodology
 - Acceptance criteria patterns (Given/When/Then, checklist format)
 - Requirements traceability
-- Reference: Quality checklist (references/quality-checklist.md)
+- Reference: Quality checklist (references/examples.md)
 
 **When to use**:
 - Analyzing stakeholder requirements
@@ -322,7 +322,7 @@ Analyze the requirements from stakeholder_feedback/mobile-signature-requests.md
 Use the requirements-analyst skill to:
 1. Extract functional requirements (what the system must do)
 2. Extract non-functional requirements (performance, security, usability)
-3. Apply quality checklist from requirements-analyst/references/quality-checklist.md
+3. Apply quality checklist from requirements-analyst/references/examples.md
 4. Identify gaps, ambiguities, and inconsistencies
 5. Structure requirements by category:
    - Core functionality
@@ -531,7 +531,7 @@ Team capacity: 320 hours, Velocity: 30 points
 
 # Use skill for domain expertise
 Design audit trail using esign-domain-expert skill
-Reference: compliance-requirements.md
+Reference: domain-knowledge.md
 
 # Use skill for documentation
 Document design using documentation-specialist skill
@@ -717,9 +717,9 @@ cat ~/.claude/skills/backlog-manager/references/epic-breakdown-example.md
 ### Skills with Reference Files
 
 - **backlog-manager**: 2 reference files (story-templates.md, epic-breakdown-example.md)
-- **esign-domain-expert**: 1 reference file (compliance-requirements.md)
+- **esign-domain-expert**: 1 reference file (domain-knowledge.md)
 - **prioritization-engine**: 1 reference file (frameworks.md)
-- **requirements-analyst**: 1 reference file (quality-checklist.md)
+- **requirements-analyst**: 1 reference file (examples.md)
 
 ---
 
@@ -750,7 +750,6 @@ cat ~/.claude/skills/backlog-manager/references/epic-breakdown-example.md
 
 ## Additional Resources
 
-- `/claude/agents/README.md` - Agent system overview
-- `/docs/workflows/` - Detailed workflow guides
+- `.claude/agents/README.md` - Agent system overview
+- `.claude/workflows/` - Detailed workflow guides
 - `~/.claude/skills/` - Installed skills with reference materials
-- `/docs/MIGRATION_GUIDE.md` - Migrating from old agent system

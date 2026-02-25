@@ -1,6 +1,6 @@
 # Product Owner Agent System (Simplified)
 
-A streamlined system of Claude Code agents and skills designed to augment Product Owner capabilities. This simplified architecture uses **2 core agents** for workflow orchestration and **8 skills** for domain knowledge that you call directly.
+A streamlined system of Claude Code agents and skills designed to augment Product Owner capabilities. This simplified architecture uses **2 core agents** for workflow orchestration and **9 skills** for domain knowledge that you call directly.
 
 ## Philosophy: Less is More
 

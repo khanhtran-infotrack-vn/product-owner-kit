@@ -188,8 +188,8 @@ New users should start with:
 
 ## Support & Resources
 
-- **Installation Guide**: `/claude/agents/README.md`
-- **Skills Documentation**: `/.claude/skills/*/SKILL.md`
-- **Agent Definitions**: `/.claude/agents/*.md`
+- **Installation Guide**: `.claude/agents/README.md`
+- **Skills Documentation**: `.claude/skills/*/SKILL.md`
+- **Agent Definitions**: `.claude/agents/*.md`
 - **Templates**: `/docs/templates/`
-- **Workflows**: `/docs/workflows/`
+- **Workflows**: `.claude/workflows/`

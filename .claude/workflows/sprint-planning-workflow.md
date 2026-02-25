@@ -3,8 +3,8 @@
 ## Overview
 This workflow guides you through creating effective sprint plans using the **sprint-planner agent**, from backlog refinement through sprint commitment and daily execution.
 
-**Time to Complete**: 2-3 hours (preparation + meeting)  
-**Agent**: sprint-planner  
+**Time to Complete**: 2-3 hours (preparation + meeting)
+**Skill**: sprint-planner
 **Output**: Sprint plan, capacity allocation, goals, and tracking board
 
 ---
@@ -89,7 +89,7 @@ Ensure user stories are "sprint-ready" (INVEST-compliant):
 
 **If stories need refinement:**
 ```
-@backlog-manager - Review and refine stories in backlog/[feature-name]/
+Use the backlog-manager skill to review and refine stories in backlog/[feature-name]/
 Ensure INVEST compliance for sprint planning
 ```
 
@@ -131,13 +131,13 @@ Sprint goal should be:
 
 ---
 
-### Step 2: Invoke Sprint Planner Agent (15-30 minutes)
+### Step 2: Use Sprint Planner Skill (15-30 minutes)
 
 **2.1 Craft Sprint Planning Prompt**
 
 Use this template:
 ```
-@sprint-planner - Create sprint plan for Sprint [number]
+Use the sprint-planner skill to create a sprint plan for Sprint [number]
 
 Backlog location: backlog/[feature-name]/
 
@@ -166,7 +166,7 @@ Constraints:
 
 **Example**:
 ```
-@sprint-planner - Create sprint plan for Sprint 12
+Use the sprint-planner skill to create a sprint plan for Sprint 12
 
 Backlog location: backlog/ai-mobile-prep/
 
@@ -530,7 +530,6 @@ Story: [SPIKE] Evaluate ML model accuracy for field detection
 
 - [Feature Development Workflow](./feature-development-workflow.md) - Complete feature delivery
 - [Brainstorming Workflow](./brainstorming-workflow.md) - Generate ideas before planning
-- [Backlog Management Workflow](./backlog-management-workflow.md) - Refine stories for sprint
 
 ---
 

@@ -260,72 +260,52 @@ Update SUMMARY.md with stakeholder input:
 After validating ideas, you have several options:
 
 #### Path A: Technical Validation (for novel/complex ideas)
-```
-@technical-architect - Review brainstorm/[feature-name]/SUMMARY.md
-Design architecture for top 3 features:
-1. Computer Vision Field Detection
-2. Confidence Scores + Visual Indicators
-3. Document Understanding + Contact Intelligence
 
-Focus on:
+Work with your engineering team to review `brainstorm/[feature-name]/SUMMARY.md`. Focus on:
 - ML infrastructure requirements
 - Mobile architecture (on-device vs cloud inference)
 - API design
 - Data privacy considerations
-```
+
+Output: Technical spike results or architecture document in `docs/technical/[feature-name]/`
 
 #### Path B: User Validation (for customer-facing features)
-```
-@user-research - Design validation study for ideas in
-brainstorm/[feature-name]/SUMMARY.md
 
-Test top 5 concepts with 10 mobile-heavy users:
-1. Computer Vision Field Detection
-2. Confidence Scores + Visual Indicators
-3. Document Understanding + Contact Intelligence
-4. One-Tap Scan & Prep
-5. AI Pre-Flight Check
+Conduct user research to validate top concepts from `brainstorm/[feature-name]/SUMMARY.md`:
+- Test top 5 concepts with 10 mobile-heavy users
+- Use usability testing, prototype walkthroughs, or surveys
 
-Deliverable: Validation report with user feedback and recommendations
-```
+Output: Validation report with user feedback and recommendations in `product_documents/user-research-[feature]-validation.md`
 
 #### Path C: Requirements & Backlog (for validated ideas)
+
 ```
-@requirements-analyst - Create detailed requirements for Phase 1 features in
+Use requirements-analyst skill to create detailed requirements for Phase 1 features in
 brainstorm/[feature-name]/SUMMARY.md
 
-Then:
-@backlog-manager - Create INVEST-compliant user stories for Phase 1
+Then use backlog-manager skill to create INVEST-compliant user stories for Phase 1
 
 Focus on 12-week delivery timeline
 ```
 
 #### Path D: Competitive Analysis (for differentiation-critical features)
-```
-@competitive-intel - Analyze competitor AI capabilities
-Context: brainstorm/ai-mobile-document-prep/SUMMARY.md
 
-Research:
+Research competitor AI capabilities manually or with web search. Reference context from `brainstorm/ai-mobile-document-prep/SUMMARY.md`:
 - DocuSign, Adobe Sign, PandaDoc, HelloSign AI features
 - How are they positioning AI? (marketing, pricing, demos)
 - Gaps we can exploit for differentiation
 
-Deliverable: Competitive matrix and positioning recommendations
-```
+Output: Competitive matrix and positioning recommendations in `product_documents/competitive-[feature-name].md`
 
 #### Path E: Risk Assessment (for high-investment features)
-```
-@risk-assessor - Assess risks for Phase 1 features in
-brainstorm/[feature-name]/SUMMARY.md
 
-Focus areas:
+Review risks for Phase 1 features with your team using `brainstorm/[feature-name]/SUMMARY.md`. Focus areas:
 - Technical risks (ML accuracy, performance, infrastructure)
 - Business risks (adoption, competitive response)
-- Compliance risks (data privacy, GDPR, SOC 2)
+- Compliance risks — use **esign-domain-expert skill** for eSign compliance
 - Timeline risks (dependencies, unknowns)
 
-Deliverable: Risk matrix with mitigation strategies
-```
+Output: Risk matrix with mitigation strategies in `docs/risks/[feature-name]-risks.md`
 
 ---
 
@@ -368,7 +348,7 @@ Focus on:
 
 **Example** (for eSign platform):
 ```
-@esign-domain-expert - Review brainstorming output in
+Use the esign-domain-expert skill to review brainstorming output in
 brainstorm/ai-mobile-document-prep/SUMMARY.md
 
 Validate ideas against:
@@ -500,8 +480,7 @@ Track these metrics to measure brainstorming effectiveness:
 ## Related Workflows
 
 - [Feature Development Workflow](./feature-development-workflow.md) - Complete feature delivery process
-- [Strategic Planning Workflow](./strategic-planning-workflow.md) - Quarterly roadmap planning
-- [User Research Workflow](./user-research-workflow.md) - Validate brainstormed ideas
+- [Sprint Planning Workflow](./sprint-planning-workflow.md) - Plan sprints after brainstorming is complete
 
 ---
 
