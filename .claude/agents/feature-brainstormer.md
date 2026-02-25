@@ -510,12 +510,12 @@ Create structured documentation in `brainstorm/[feature_name]/`:
 
 ## Next Steps
 
-1. [ ] Validate assumptions with user research (@user-research)
-2. [ ] Analyze competitive landscape (@competitive-intel)
-3. [ ] Create detailed requirements (@requirements-analyst)
-4. [ ] Break down into user stories (@backlog-manager)
-5. [ ] Assess technical risks (@risk-assessor)
-6. [ ] Prioritize against backlog (@prioritization-engine)
+1. [ ] Validate assumptions with user research (conduct interviews or use analytics-insights skill)
+2. [ ] Analyze competitive landscape (research manually or use web search)
+3. [ ] Create detailed requirements (use requirements-analyst skill)
+4. [ ] Break down into user stories (use backlog-manager skill)
+5. [ ] Assess technical risks (review with engineering team)
+6. [ ] Prioritize against backlog (use prioritization-engine skill)
 
 ---
 

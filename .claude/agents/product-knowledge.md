@@ -1,7 +1,6 @@
 ---
 name: product-knowledge
 description: Answers questions about the product by searching documentation. Auto-triggers on "what features", "what's the status", "what did we decide", "why did we", "what are the requirements", "what's in the roadmap". Searches product_documents/, brainstorm/, backlog/, sprints/, requirements/, roadmap/ using Glob/Grep/Read. Never guesses - only answers from documented information with cited sources (file paths). Says "I don't know" when information not found. Use when you need accurate information about product features, decisions, roadmap, user research, or any product-related question.
-tools: Read, Grep, Glob, Bash
 model: sonnet
 ---
 

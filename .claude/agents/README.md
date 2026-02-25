@@ -95,7 +95,7 @@ This system was simplified from 14 agents to 2 agents to reduce confusion and in
 
 ---
 
-## Skills (8) - Call Directly
+## Skills (9) - Call Directly
 
 Instead of invoking agents for every task, call skills directly in your prompts. This gives you more control and clarity.
 
@@ -208,7 +208,7 @@ Feature context: [describe feature]
 - Audit trail requirements
 - Identity verification standards
 - Electronic signature workflows
-- Reference: compliance requirements (references/compliance-requirements.md)
+- Reference: domain knowledge (references/domain-knowledge.md)
 
 **When to use**: eSignature features, compliance questions, audit trail design
 
@@ -261,7 +261,7 @@ Features:
 - Functional vs non-functional requirements
 - Gap analysis methodology
 - Acceptance criteria patterns
-- Reference: requirements quality checklist (references/quality-checklist.md)
+- Reference: requirement examples and patterns (references/examples.md)
 
 **When to use**: Analyzing requirements, identifying gaps, structuring requirements
 
@@ -371,20 +371,20 @@ Install both agents AND skills for full functionality:
 
 ```bash
 # 1. Install skills (domain knowledge)
-cd /.claude/skills/
+cd .claude/skills/
 # Skills are already installed in this system
 
 # 2. Install agents (workflow orchestration)
 mkdir -p ~/.claude/agents
-cp /Users/trankhanh/Desktop/MyProjects/ProductOwnerOrchestration/claude/agents/*.md ~/.claude/agents/
+cp /Users/trankhanh/Desktop/MyProjects/ProductOwnerOrchestration/.claude/agents/*.md ~/.claude/agents/
 ```
 
 ### Option 1: User-Level (Available in all projects)
 
 ```bash
 # Copy 2 agents to user-level directory
-cp claude/agents/feature-brainstormer.md ~/.claude/agents/
-cp claude/agents/product-knowledge.md ~/.claude/agents/
+cp .claude/agents/feature-brainstormer.md ~/.claude/agents/
+cp .claude/agents/product-knowledge.md ~/.claude/agents/
 ```
 
 ### Option 2: Project-Level (Specific to one project)
@@ -392,8 +392,8 @@ cp claude/agents/product-knowledge.md ~/.claude/agents/
 ```bash
 # In your project directory
 mkdir -p .claude/agents
-cp claude/agents/feature-brainstormer.md .claude/agents/
-cp claude/agents/product-knowledge.md .claude/agents/
+cp .claude/agents/feature-brainstormer.md .claude/agents/
+cp .claude/agents/product-knowledge.md .claude/agents/
 ```
 
 ---
@@ -506,7 +506,7 @@ skill-name/
 
 ## Workflows
 
-See `/docs/workflows/` for detailed workflow guides:
+See `.claude/workflows/` for detailed workflow guides:
 
 - **feature-development-workflow.md** - End-to-end feature development (6 stages)
 - **brainstorming-workflow.md** - Detailed brainstorming guide (5 steps)
@@ -522,7 +522,7 @@ See `/docs/workflows/` for detailed workflow guides:
 - ❌ Indirection: Agent decides what to do
 - ❌ Complexity: Too many options
 
-### After (2 agents + 8 skills)
+### After (2 agents + 9 skills)
 - ✅ Clarity: Only 2 agents to remember
 - ✅ Control: You decide which skill to apply
 - ✅ Efficiency: Skills called directly in prompts
@@ -670,12 +670,13 @@ Both agents have **persistent memory** enabled at the user level. They learn and
 - Improving accuracy through historical data
 - Adapting to your team's specific context
 
-To view an agent's memory:
+To view an agent's memory (stored in Claude's project memory directory):
 
 ```bash
-cat ~/.claude/agent-memory/product-knowledge/MEMORY.md
-cat ~/.claude/agent-memory/feature-brainstormer/MEMORY.md
+ls ~/.claude/projects/
 ```
+
+Each agent's memory is persisted in the project's memory directory and is automatically loaded into future conversations.
 
 ---
 
@@ -704,18 +705,18 @@ For issues or suggestions:
 - Check agent MEMORY.md files for historical context
 - Modify agents to fit your team's workflow
 - Create custom skills for domain-specific knowledge
-- See `/docs/HOW_TO_USE_SKILLS.md` for detailed skill usage guide
+- See `.claude/agents/README.md` for the full skill usage guide
 
 ---
 
 ## Version
 
 **Version**: 3.0.0 (Simplified)
-**Last Updated**: 2024-02-07
+**Last Updated**: 2026-02-25
 **Compatible With**: Claude Code (all versions with subagent and skills support)
 
 **Changelog**:
-- **v3.0.0**: Simplified from 14 agents to 2 agents + 8 skills (call directly)
+- **v3.0.0**: Simplified from 14 agents to 2 agents + 9 skills (call directly)
 - **v2.0.0**: Added skills integration, separated domain knowledge from workflow orchestration
 - **v1.0.0**: Initial agent system
 
