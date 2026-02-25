@@ -16,20 +16,20 @@ python3 .claude/skills/agile-product-owner/scripts/user_story_generator.py --sav
 ## Architecture
 
 ```
-2 Agents (workflow orchestration)   13 Skills (domain knowledge, called directly)
+3 Agents (workflow orchestration)   13 Skills (domain knowledge, called directly)
 ├── product-knowledge               ├── agile-product-owner   (INVEST, user stories)
 │   tools: Read, Glob, Grep         ├── analytics-insights    (HEART, AARRR, A/B)
-└── feature-brainstormer            ├── backlog-manager       (story templates, epics)
-    tools: Read,Write,Edit,         ├── documentation-specialist (PRD, ADR, release notes)
-           Bash,Grep,Glob           ├── esign-domain-expert   (eIDAS, ESIGN, audit trails)
-    └── references/                 ├── po-brainstorm         (brainstorm entry point)
-        ├── challenge-techniques.md ├── po-research           (research entry point)
-        └── user-interaction-       ├── po-risk-radar         (blind spot detector)
-            patterns.md             ├── prioritization-engine (RICE, MoSCoW, WSJF)
-                                    ├── requirements-analyst  (extraction, gap analysis)
-                                    ├── sprint-planner        (capacity, story selection)
-                                    ├── stakeholder-communicator (updates, presentations)
-                                    └── writing-clearly-and-concisely (docs, commits, UI text)
+├── feature-brainstormer            ├── backlog-manager       (story templates, epics)
+│   tools: Read,Write,Edit,         ├── documentation-specialist (PRD, ADR, release notes)
+│          Bash,Grep,Glob           ├── esign-domain-expert   (eIDAS, ESIGN, audit trails)
+└── po-workflow-assistant           ├── po-brainstorm         (brainstorm entry point)
+    tools: Read,Glob,Grep,Write     ├── po-research           (research entry point)
+                                    ├── po-risk-radar         (blind spot detector)
+Agent references/                   ├── prioritization-engine (RICE, MoSCoW, WSJF)
+├── challenge-techniques.md         ├── requirements-analyst  (extraction, gap analysis)
+├── user-interaction-patterns.md    ├── sprint-planner        (capacity, story selection)
+├── brainstorm-templates.md         ├── stakeholder-communicator (updates, presentations)
+└── knowledge-patterns.md          └── writing-clearly-and-concisely (docs, commits, UI text)
 ```
 
 **Agents** use Claude Code's subagent system (invoked with `@agent-name`). They have tool access declared in their `tools:` frontmatter field and orchestrate multi-step workflows.
@@ -45,7 +45,6 @@ python3 .claude/skills/agile-product-owner/scripts/user_story_generator.py --sav
 ---
 name: agent-name
 description: One-line description used for auto-trigger matching — this is critical
-tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet
 ---
 
@@ -53,6 +52,8 @@ System prompt in markdown...
 ```
 
 The `description` field is parsed by Claude Code to decide when to auto-invoke the agent. Keep it precise with trigger keywords.
+
+The `tools:` field (optional) restricts which tools the agent can access. If omitted, the agent inherits all available tools. The architecture diagram above documents which tools each agent uses; this is informational, not enforced via frontmatter.
 
 ### Skill format (`.claude/skills/<name>/SKILL.md`)
 ```markdown
@@ -99,7 +100,7 @@ Some skills have reference files with specific content — always use the correc
 
 ## Document Skills
 
-`.claude/skills/document-skills/` contains four additional skills for document manipulation (docx, pdf, pptx, xlsx). These are separate from the product management skills and have their own scripts and OOXML reference schemas. They are not listed in the 9 core skills count.
+`.claude/skills/document-skills/` contains four additional skills for document manipulation (docx, pdf, pptx, xlsx). These are separate from the 13 product management skills and have their own scripts and OOXML reference schemas.
 
 ## Adding New Skills
 
