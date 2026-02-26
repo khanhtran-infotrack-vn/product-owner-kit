@@ -1,6 +1,6 @@
 ---
 name: po-brainstorm
-description: "Product Owner brainstorming entry point. Routes to feature-brainstormer agent for structured ideation with SCAMPER, anti-bias rotation, idea clustering, Challenge & Critique phase (pre-mortem, devil's advocate, constraint inversion), and optional user story generation. Modes: --quick (skip ideation/clustering), --challenge (challenge-only on existing ideas), --idea (ideation only)."
+description: "Product Owner brainstorming entry point. Routes to feature-brainstormer agent for structured ideation with SCAMPER, anti-bias rotation, idea clustering, Challenge & Critique phase (pre-mortem, devil's advocate, constraint inversion), and optional user story generation. Modes: --quick (skip clustering+challenge), --idea (ideation+clustering only), --challenge (challenge-only on existing ideas)."
 ---
 
 # PO Brainstorm
@@ -11,13 +11,13 @@ Topic: $ARGUMENTS
 
 Parse `$ARGUMENTS` for mode flags before delegating:
 - Default (no flag): Full workflow — context gathering, ideation, clustering, evaluation, challenge & critique, documentation
-- `--quick`: Skip ideation + clustering, go straight to evaluation and challenge
+- `--quick`: Skip clustering + challenge; run ideation → evaluation → documentation (time-constrained sessions)
 - `--challenge`: Challenge-only mode — stress-test existing ideas without generating new ones
 - `--idea`: Ideation-only — stop after idea clustering (skip challenge and deep evaluation)
 
 Strip mode flags from topic string before delegation.
 
-## Pre-Discovery (before delegation)
+## Discovery
 
 Before spawning the feature-brainstormer agent, gather essential context that the
 agent cannot ask for interactively. If the user has NOT provided this information
@@ -34,7 +34,7 @@ Task() prompt as the `User context` block below.
 NOT have access to AskUserQuestion. This pre-discovery step runs in the main
 conversation context where the tool IS available.
 
-## Invocation
+## Delegate to feature-brainstormer agent
 
 **Claude Code CLI:**
 ```
@@ -62,7 +62,7 @@ Read product context from product_documents/ and existing brainstorm sessions fr
 
 Run the appropriate mode:
 - full: all phases (context → ideation → clustering → evaluation → challenge & critique → documentation)
-- quick: skip ideation + clustering, go straight to evaluation + challenge
+- quick: keep ideation, skip clustering + challenge (evaluation → documentation only)
 - challenge: challenge-only on existing ideas (read brainstorm/[topic]/SUMMARY.md first)
 - idea: ideation + clustering only (stop before challenge)"
 )
@@ -80,6 +80,16 @@ The agent will:
 - Reconcile rankings after challenge
 - Document in `brainstorm/[topic]/SUMMARY.md` and `IDEAS.md`
 - Optionally generate draft user stories with story point estimates
+
+## Review Gate
+
+After the agent completes, read `brainstorm/[topic-slug]/SUMMARY.md` (use the
+slugified topic string to locate it). Surface the recommended approach and any
+unresolved questions the agent flagged under `## FOLLOW-UP QUESTIONS FOR USER`.
+
+Present findings as plain text. If the agent raised BLOCKING questions, address
+them before moving to next steps. If output is incomplete or the file is missing,
+tell the user and offer to re-run with the missing context filled in.
 
 ## What Next?
 
