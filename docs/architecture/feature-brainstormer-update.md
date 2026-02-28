@@ -54,7 +54,7 @@ To:
 
 ### 6. Added Story Point Estimation Guidelines ✅
 Mapping from Technical Feasibility scores to story points:
-- Feasibility 5 (Simple) → 1-3 points
+- Feasibility 5 (Simple) → 1-2 points
 - Feasibility 4 (Straightforward) → 3-5 points
 - Feasibility 3 (Moderate) → 5-8 points
 - Feasibility 2 (Complex) → 8-13 points

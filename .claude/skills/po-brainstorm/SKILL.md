@@ -1,6 +1,6 @@
 ---
 name: po-brainstorm
-description: "Product Owner brainstorming entry point. Routes to feature-brainstormer agent for structured ideation with SCAMPER, anti-bias rotation, idea clustering, Challenge & Critique phase (pre-mortem, devil's advocate, constraint inversion), and optional user story generation. Modes: --quick (skip clustering+challenge), --idea (ideation+clustering only), --challenge (challenge-only on existing ideas)."
+description: "Product Owner brainstorming entry point. Routes to feature-brainstormer agent for structured ideation with SCAMPER, anti-bias rotation, idea clustering, Challenge & Critique phase (pre-mortem, devil's advocate, constraint inversion), and optional user story generation. Modes: --quick (skip clustering+challenge), --idea (ideation+clustering only), --challenge (challenge-only on existing ideas), --deep (enhanced challenge on top 3: Steelman, Socratic, Assumption Ladder, Regulatory Pre-Mortem, Anti-Pattern), --personas (7-persona Persona Council before ideation), --radar (risk radar scan before ideation to guide focus)."
 ---
 
 # PO Brainstorm
@@ -16,7 +16,9 @@ Parse `$ARGUMENTS` for mode flags before delegating:
 - `--idea`: Ideation-only — stop after idea clustering (skip challenge and deep evaluation)
 - `--deep`: Full workflow with enhanced challenge after standard 4a-4f phases (adds Steelman, Socratic Depth, Assumption Ladder, Regulatory Pre-Mortem, Anti-Pattern Check on top 3 ideas). Use for high-stakes decisions.
 - `--personas`: Activate persona council before ideation — 7 stakeholder personas each generate 3-5 ideas from their POV before SCAMPER runs. Use when solo PO needs diverse perspectives.
+- `--radar`: Run risk radar scan (Step 0) before ideation — identifies uncovered strategic domains to guide brainstorm focus. Useful for strategic or exploratory topics.
 - Flags combine freely: `--deep --personas` runs both enhancements together.
+- **Exception**: `--personas` requires an ideation step and is ignored in `--challenge` mode (which runs on existing ideas without new ideation). If both are given, the conflict is noted in output.
 
 Strip mode flags from topic string before delegation.
 

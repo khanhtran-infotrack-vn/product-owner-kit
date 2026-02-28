@@ -60,11 +60,12 @@ Results are saved to `brainstorm/[topic]/SUMMARY.md` and `IDEAS.md`.
 | Flag | What it does | When to use |
 |------|-------------|-------------|
 | *(none)* | Full session: ideation → clustering → evaluation → challenge | Default — always a good start |
-| `--quick` | Skip to evaluation only — no ideation or clustering | When you already have ideas |
+| `--quick` | Skip clustering and challenge; run ideation → evaluation → documentation | Time-constrained sessions |
 | `--idea` | Ideation and clustering only — stop before challenge | When you just want raw ideas |
 | `--challenge` | Re-challenge ideas from a previous session | When you want a second pass |
 | `--deep` | Full session + 5 enhanced challenge sub-phases on your top 3 ideas | High-stakes decisions |
 | `--personas` | Adds 7 stakeholder personas who each generate ideas before SCAMPER | Solo PO needing diverse perspectives |
+| `--radar` | Risk radar scan before ideation — identifies uncovered strategic domains to guide brainstorm focus | Strategic or exploratory topics |
 | `--deep --personas` | Everything: persona ideation + full challenge + deep challenge | Most thorough option |
 
 ### 3. Research what's already documented

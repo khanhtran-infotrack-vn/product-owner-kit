@@ -156,10 +156,10 @@ Use the second response when the topic matches a po-risk-radar domain category (
 4. Use Read            → Extract detailed information from relevant files
 5. Synthesize          → Combine information from multiple sources
 6. Cite sources        → Reference specific documents
-3.5. Writing Review    → Apply writing-clearly-and-concisely to all prose before output:
+7. Writing Review      → Apply writing-clearly-and-concisely to all prose before output:
                          active voice, omit needless words, no AI puffery.
                          Preserve tables, file paths, story IDs, and quoted text.
-4. Answer              → Provide comprehensive, documented answer
+8. Answer              → Provide comprehensive, documented answer
    OR Structural gap   → Say "I don't know" + suggest /po-risk-radar if the topic
                          matches a strategic domain with zero coverage across all dirs
 ```

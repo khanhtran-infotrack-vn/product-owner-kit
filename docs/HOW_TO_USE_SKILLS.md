@@ -507,7 +507,10 @@ These three skills work as **slash commands** — they gather context, then disp
 | `--challenge` | Challenge-only; stress-test ideas from a previous session | Re-examine existing brainstorm output |
 | `--deep` | Full workflow + 5 enhanced challenge sub-phases (Steelman, Socratic Depth, Assumption Ladder, Regulatory Pre-Mortem, Anti-Pattern Check) on top 3 ideas | High-stakes decisions requiring maximum rigor |
 | `--personas` | Full workflow with Persona Council before SCAMPER — 7 stakeholder personas (CFO, New User, Enterprise Buyer, Competitor Analyst, Support Lead, Power User, Regulator) each generate ideas from their POV | Solo PO who needs diverse perspectives |
+| `--radar` | Run risk radar scan before ideation to identify uncovered strategic domains and guide brainstorm focus | Strategic or exploratory topics |
 | `--deep --personas` | Both enhancements active | Maximum rigor + cognitive diversity |
+
+**Flag conflict**: `--personas` requires an ideation step. If combined with `--challenge` (challenge-only mode), `--personas` is ignored and the conflict is noted in the output.
 
 **Examples**:
 ```
@@ -834,21 +837,21 @@ Step 3: Use [skill-3] to [task-3] combining results
 ### List All Skills
 
 ```bash
-ls -la ~/.claude/skills/
+ls -la .claude/skills/
 ```
 
 ### View Skill Main Content
 
 ```bash
-cat ~/.claude/skills/backlog-manager/SKILL.md
+cat .claude/skills/backlog-manager/SKILL.md
 ```
 
 ### View Skill References
 
 ```bash
-ls ~/.claude/skills/backlog-manager/references/
-cat ~/.claude/skills/backlog-manager/references/story-templates.md
-cat ~/.claude/skills/backlog-manager/references/epic-breakdown-example.md
+ls .claude/skills/backlog-manager/references/
+cat .claude/skills/backlog-manager/references/story-templates.md
+cat .claude/skills/backlog-manager/references/epic-breakdown-example.md
 ```
 
 ### Skills with Reference Files
@@ -897,6 +900,5 @@ cat ~/.claude/skills/backlog-manager/references/epic-breakdown-example.md
 
 ## Additional Resources
 
-- `.claude/agents/README.md` - Agent system overview
-- `.claude/workflows/` - Detailed workflow guides
-- `~/.claude/skills/` - Installed skills with reference materials
+- `.claude/agents/` - Agent definitions and reference files
+- `.claude/skills/` - Installed skills with reference materials
