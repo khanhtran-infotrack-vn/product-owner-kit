@@ -14,6 +14,9 @@ Parse `$ARGUMENTS` for mode flags before delegating:
 - `--quick`: Skip clustering + challenge; run ideation → evaluation → documentation (time-constrained sessions)
 - `--challenge`: Challenge-only mode — stress-test existing ideas without generating new ones
 - `--idea`: Ideation-only — stop after idea clustering (skip challenge and deep evaluation)
+- `--deep`: Full workflow with enhanced challenge after standard 4a-4f phases (adds Steelman, Socratic Depth, Assumption Ladder, Regulatory Pre-Mortem, Anti-Pattern Check on top 3 ideas). Use for high-stakes decisions.
+- `--personas`: Activate persona council before ideation — 7 stakeholder personas each generate 3-5 ideas from their POV before SCAMPER runs. Use when solo PO needs diverse perspectives.
+- Flags combine freely: `--deep --personas` runs both enhancements together.
 
 Strip mode flags from topic string before delegation.
 
@@ -42,6 +45,7 @@ Task(
   subagent_type="feature-brainstormer",
   prompt="Topic: [topic with flags stripped]
 Mode: [full|quick|challenge|idea]
+Flags: [--deep if present] [--personas if present]
 
 User context (gathered during pre-discovery):
 - Target persona: [answer or 'not specified -- use your best judgment']
@@ -64,7 +68,11 @@ Run the appropriate mode:
 - full: all phases (context → ideation → clustering → evaluation → challenge & critique → documentation)
 - quick: keep ideation, skip clustering + challenge (evaluation → documentation only)
 - challenge: challenge-only on existing ideas (read brainstorm/[topic]/SUMMARY.md first)
-- idea: ideation + clustering only (stop before challenge)"
+- idea: ideation + clustering only (stop before challenge)
+
+Apply flags if present:
+- --personas: run Step 1.5 Persona Council before SCAMPER (load .claude/agents/references/persona-profiles.md)
+- --deep: after standard challenge (4a-4f), run deep challenge (4g-4k) on top 3 ideas (see challenge-techniques.md Section 6)"
 )
 ```
 

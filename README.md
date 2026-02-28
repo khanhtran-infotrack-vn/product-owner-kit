@@ -4,12 +4,12 @@ An AI-powered system for product management workflows built for Claude Code.
 
 ## Overview
 
-This system provides **2 core agents** for complex workflows and **11 specialized skills** for domain knowledge, helping Product Owners manage the entire product development lifecycle more efficiently.
+This system provides **3 core agents** for complex workflows and **13 specialized skills** for domain knowledge, helping Product Owners manage the entire product development lifecycle more efficiently.
 
 ### Philosophy: Simple, Powerful, Controllable
 
-- **2 Core Agents**: Handle complex workflows (Q&A and brainstorming)
-- **11 Skills**: Call directly for full control over frameworks and methodologies
+- **3 Core Agents**: Handle complex workflows (Q&A, brainstorming, strategic planning)
+- **13 Skills**: Call directly for full control over frameworks and methodologies
 - **Clear Separation**: Agents orchestrate tools, skills provide knowledge
 
 ## Quick Start
@@ -51,7 +51,7 @@ Use the backlog-manager skill to create user stories for mobile signature featur
 
 ## Core Components
 
-### 2 Agents
+### 3 Agents
 
 #### 1. product-knowledge
 **Purpose**: Answer questions by searching documentation
@@ -73,13 +73,24 @@ Use the backlog-manager skill to create user stories for mobile signature featur
 - Optional: Creates INVEST-compliant user stories after brainstorming
 - Saves output to `brainstorm/[feature-name]/`
 
-**Mode flags**: `--quick` (skip clustering/challenge), `--challenge` (re-challenge existing ideas)
+**Mode flags**: `--quick` (skip clustering/challenge), `--challenge` (re-challenge existing ideas), `--deep` (enhanced challenge with Steelman, Socratic Depth, Assumption Ladder, Regulatory Pre-Mortem, Anti-Pattern Check), `--personas` (7-persona Persona Council before ideation)
 
 **Usage**: `@feature-brainstormer - Brainstorm [topic]`
 
+#### 3. po-workflow-assistant
+**Purpose**: Strategic planning meta-agent for product thinking and risk mapping
+
+- Structures product thinking and roadmap framing
+- Identifies blind spots and strategic coverage gaps
+- Supports risk mapping and assumption validation
+- Guides meta-level planning decisions
+- Integrates insights from other agents and skills
+
+**Usage**: `@po-workflow-assistant - [strategic planning question]`
+
 ---
 
-### 11 Skills (Call Directly)
+### 13 Skills (Call Directly)
 
 | Skill | Purpose | When to Use |
 |-------|---------|-------------|
@@ -90,10 +101,12 @@ Use the backlog-manager skill to create user stories for mobile signature featur
 | **esign-domain-expert** | eIDAS/ESIGN compliance, audit trails | eSignature features, compliance |
 | **po-brainstorm** | Brainstorm entry point — routes to feature-brainstormer | Starting a brainstorming session |
 | **po-research** | Research entry point — routes to product-knowledge | Querying product documentation |
+| **po-risk-radar** | Proactive blind spot detector — scans product docs and surfaces uncovered strategic domains | Finding coverage gaps, risk mapping |
 | **prioritization-engine** | RICE/MoSCoW/WSJF frameworks | Prioritizing features, ranking |
 | **requirements-analyst** | Requirements extraction, gap analysis | Analyzing requirements, finding gaps |
 | **sprint-planner** | Sprint planning, capacity calculation | Planning sprints, selecting stories |
 | **stakeholder-communicator** | Updates, announcements, presentations | Communicating with stakeholders |
+| **writing-clearly-and-concisely** | Active voice, concise language, remove puffery | Reviewing docs, commits, UI copy |
 
 ## Features
 
@@ -122,7 +135,8 @@ Product Owner Orchestration System
 │
 ├── Agents (Workflow Orchestration)
 │   ├── product-knowledge       → Q&A from documentation
-│   └── feature-brainstormer    → Creative ideation + story creation
+│   ├── feature-brainstormer    → Creative ideation + story creation
+│   └── po-workflow-assistant   → Strategic planning meta-agent
 │
 ├── Skills (Domain Knowledge)
 │   ├── agile-product-owner     → User stories, INVEST, estimation
@@ -132,10 +146,12 @@ Product Owner Orchestration System
 │   ├── esign-domain-expert     → eIDAS/ESIGN compliance
 │   ├── po-brainstorm           → Brainstorm entry point (routes to feature-brainstormer)
 │   ├── po-research             → Research entry point (routes to product-knowledge)
+│   ├── po-risk-radar           → Blind spot detection, strategic gap analysis
 │   ├── prioritization-engine   → RICE/MoSCoW/WSJF
 │   ├── requirements-analyst    → Requirements extraction
 │   ├── sprint-planner          → Sprint planning, capacity
-│   └── stakeholder-communicator → Updates, announcements
+│   ├── stakeholder-communicator → Updates, announcements
+│   └── writing-clearly-and-concisely → Writing quality and clarity
 │
 └── Documentation
     ├── Workflows                → Feature dev, brainstorming, sprint planning
@@ -232,9 +248,11 @@ ProductOwnerOrchestration/
 │   ├── agents/
 │   │   ├── feature-brainstormer.md   # Brainstorming agent
 │   │   ├── product-knowledge.md      # Q&A agent
+│   │   ├── po-workflow-assistant.md  # Strategic planning agent
 │   │   └── references/               # Agent supporting docs
 │   │       ├── challenge-techniques.md
-│   │       └── user-interaction-patterns.md
+│   │       ├── user-interaction-patterns.md
+│   │       └── persona-profiles.md
 │   │
 │   └── skills/
 │       ├── agile-product-owner/      # User stories, INVEST principles
@@ -244,10 +262,12 @@ ProductOwnerOrchestration/
 │       ├── esign-domain-expert/      # eSignature compliance + references
 │       ├── po-brainstorm/            # Brainstorm entry point skill
 │       ├── po-research/              # Research entry point skill
+│       ├── po-risk-radar/            # Blind spot detection
 │       ├── prioritization-engine/    # RICE/MoSCoW frameworks + references
 │       ├── requirements-analyst/     # Requirements quality + references
 │       ├── sprint-planner/           # Sprint planning methodology
-│       └── stakeholder-communicator/ # Communication templates
+│       ├── stakeholder-communicator/ # Communication templates
+│       └── writing-clearly-and-concisely/ # Writing quality and clarity
 │
 ├── docs/
 │   ├── HOW_TO_USE_SKILLS.md         # Skills usage guide
@@ -312,7 +332,7 @@ ProductOwnerOrchestration/
 - No "magic" - transparent processes
 
 **Simplicity**:
-- Only 2 agents to remember
+- Only 3 agents to remember
 - Skills called directly when needed
 - Clear mental model
 - Easy to onboard team members
@@ -337,9 +357,9 @@ cp .claude/agents/*.md ~/.claude/agents/
 
 ### Project-Level Installation
 
-Agents already in `.claude/agents/` — ready to use within this project.
+Agents already in `.claude/agents/` — ready to use within this project (includes product-knowledge, feature-brainstormer, po-workflow-assistant).
 
-**Skills**: Already installed in `~/.claude/skills/` and available system-wide.
+**Skills**: Already installed in `~/.claude/skills/` and available system-wide (13 skills).
 
 ## Best Practices
 
@@ -418,7 +438,7 @@ ls .claude/agents/
 ```bash
 # Check project-level skills
 ls .claude/skills/
-# Should show 11+ skill directories
+# Should show 13 skill directories
 ```
 
 ### Output quality issues
@@ -430,6 +450,7 @@ ls .claude/skills/
 
 ## Version History
 
+- **v4.2.0** (2026-02-28): Added `--deep` flag (5 enhanced challenge sub-phases: Steelman, Socratic Depth, Assumption Ladder, Regulatory Pre-Mortem, Anti-Pattern Check) and `--personas` flag (7-persona Persona Council) to feature-brainstormer; added po-workflow-assistant meta-agent; added po-risk-radar and writing-clearly-and-concisely skills; added persona-profiles.md reference file
 - **v4.1.0** (2026-02-25): Added po-brainstorm + po-research entry-point skills, enhanced feature-brainstormer with challenge phases, anti-bias domain rotation, and sub-agent mode
 - **v4.0.0** (2026-02-25): Removed OpenCode support, Claude Code exclusive
 - **v3.1.0** (2024-02-09): Added dual-format support (OpenCode + Claude Code)
@@ -460,11 +481,12 @@ Provided as a template for product management workflows. Customize for your team
 
 ## Quick Reference
 
-### 2 Agents
+### 3 Agents
 - `@product-knowledge` - Q&A from documentation
-- `@feature-brainstormer` - Creative brainstorming
+- `@feature-brainstormer` - Creative brainstorming (supports `--deep`, `--personas`, `--quick`, `--challenge` flags)
+- `@po-workflow-assistant` - Strategic planning meta-agent
 
-### 11 Skills (Call Directly)
+### 13 Skills (Call Directly)
 - `agile-product-owner` - User stories, INVEST
 - `analytics-insights` - Metrics analysis
 - `backlog-manager` - Story creation
@@ -472,10 +494,12 @@ Provided as a template for product management workflows. Customize for your team
 - `esign-domain-expert` - eSignature compliance
 - `po-brainstorm` - Brainstorm entry point
 - `po-research` - Research entry point
+- `po-risk-radar` - Blind spot detection, gap analysis
 - `prioritization-engine` - RICE/MoSCoW/WSJF
 - `requirements-analyst` - Requirements extraction
 - `sprint-planner` - Sprint planning
 - `stakeholder-communicator` - Updates, announcements
+- `writing-clearly-and-concisely` - Writing quality review
 
 ### Key Documentation
 - `CLAUDE.md` - Repository structure and guide

@@ -4,7 +4,7 @@
 
 The Product Owner Orchestration System follows a **simplified layered architecture** that separates concerns between domain knowledge (Skills), workflow orchestration (Agents), and infrastructure (Claude Code).
 
-**Key Design Principle**: 2 core agents for complex workflows + 9 skills for direct invocation = clarity and control.
+**Key Design Principle**: 3 agents for complex workflows + 13 skills for direct invocation = clarity and control.
 
 ## Architecture Diagram
 
@@ -24,7 +24,7 @@ The Product Owner Orchestration System follows a **simplified layered architectu
          ▼                               ▼
 ┌─────────────────┐             ┌─────────────────┐
 │  Agent Layer    │             │  Skills Layer   │
-│  (2 Agents)     │◄───────────►│  (9 Skills)     │
+│  (3 Agents)     │◄───────────►│  (13 Skills)    │
 │                 │             │                 │
 │ • Q&A           │             │ • Domain        │
 │ • Brainstorm    │             │   Knowledge     │
@@ -59,7 +59,7 @@ The Product Owner Orchestration System follows a **simplified layered architectu
 
 **Interactions**:
 - Natural language requests
-- Agent invocation: `@product-knowledge`, `@feature-brainstormer`
+- Agent invocation: `@product-knowledge`, `@feature-brainstormer`, `@po-workflow-assistant`
 - Direct skill calls: "Use [skill-name] skill to..."
 - File-based inputs (requirements docs, backlog files)
 
@@ -87,21 +87,19 @@ The Product Owner Orchestration System follows a **simplified layered architectu
 
 **Purpose**: Orchestrate tools for complex workflows
 
-**Current Agents (2)**:
+**Current Agents (3)**:
 
 #### product-knowledge
 ```yaml
 name: product-knowledge
 description: Answer questions about product from documentation
-tools: Read, Bash, Grep, Glob
+tools: Read, Glob, Grep
 model: inherit
-memory: user
-skills: [agile-product-owner]
 ```
 
 **Responsibilities**:
 - Search all product documentation
-- Never guess - only answer from documented information
+- Never guess — only answer from documented information
 - Always cite sources (file:line)
 - Say "I don't know" when info not found
 
@@ -118,25 +116,64 @@ skills: [agile-product-owner]
 ```yaml
 name: feature-brainstormer
 description: Facilitate creative brainstorming with optional story creation
-tools: Read, Write, Bash, Grep, Glob
-model: inherit
-memory: user
-skills: [agile-product-owner]
+tools: Read, Write, Edit, Bash, Grep, Glob
+model: opus
 ```
 
 **Responsibilities**:
 - Facilitate structured brainstorming sessions
-- Generate 50-100+ diverse ideas
+- Generate 50-100+ diverse ideas across standard and deep challenge phases
 - Evaluate feasibility and impact
 - Optional: Create user stories with estimates
 - Save output to `brainstorm/[feature-name]/`
 
+**Flags**:
+- `--personas`: Activates Persona Council (Step 1.5) before SCAMPER — 7 stakeholder personas each generate 3-5 ideas from their POV
+- `--deep`: After the standard 6 challenge sub-phases (4a-4f), runs 5 enhanced sub-phases (4g-4k) on the top 3 ideas
+- Flags combine freely: `--deep --personas` runs both; `--challenge --deep` re-challenges with deep sub-phases
+
+**Standard challenge sub-phases (4a-4f)**:
+- 4a Pre-Mortem, 4b Assumption Stress-Test, 4c Devil's Advocate, 4d Constraint Inversion, 4e Anti-Bias Challenge, 4f Clustering Stress-Test
+
+**Deep challenge sub-phases (4g-4k, activated by --deep)**:
+- 4g Steelman Protocol, 4h Socratic Depth, 4i Assumption Ladder, 4j Regulatory Pre-Mortem, 4k Anti-Pattern Check
+
+**Agent reference files used**:
+- `brainstorm-templates.md` — output templates including Persona Council Findings table and Deep Challenge Results tables
+- `challenge-techniques.md` — question banks for 4a-4f + Section 6 Deep Challenge Techniques (4g-4k)
+- `persona-profiles.md` — 7 stakeholder persona profiles for Persona Council
+
 **Workflow**:
 1. Read product context from `product_documents/`
-2. Generate ideas across multiple categories
-3. Evaluate each idea (feasibility, impact)
-4. Create summary with top recommendations
-5. Optional: Generate user stories with estimates
+2. (If `--personas`) Run Persona Council (Step 1.5): each persona generates 3-5 ideas
+3. Generate ideas via SCAMPER across multiple categories
+4. Run standard challenge sub-phases 4a-4f
+5. (If `--deep`) Run deep challenge sub-phases 4g-4k on top 3 ideas
+6. Evaluate each idea (feasibility, impact)
+7. Create summary with top recommendations
+8. Optional: Generate user stories with estimates
+
+---
+
+#### po-workflow-assistant
+```yaml
+name: po-workflow-assistant
+description: Assist with PO workflow planning and strategic decisions
+tools: Read, Glob, Grep, Write
+model: inherit
+```
+
+**Responsibilities**:
+- Guide product owners through workflow decisions
+- Help with strategic planning and prioritization
+- Read and synthesize product documentation
+- Write workflow summaries and planning artifacts
+
+**Workflow**:
+1. Read relevant product and workflow documentation
+2. Synthesize context from multiple sources
+3. Provide structured guidance and recommendations
+4. Write output artifacts as needed
 
 ---
 
@@ -172,17 +209,21 @@ Components:
 
 **Purpose**: Provide reusable domain expertise called directly by users
 
-**Current Skills (9)**:
+**Current Skills (13)**:
 
-1. **agile-product-owner** - User stories, INVEST principles, estimation
+1. **agile-product-owner** - User stories, INVEST principles, estimation (+ scripts/)
 2. **analytics-insights** - Metrics frameworks (HEART, AARRR), A/B testing
 3. **backlog-manager** - Story templates, epic breakdown (+ 2 reference files)
 4. **documentation-specialist** - PRD/ADR templates, documentation standards
 5. **esign-domain-expert** - eIDAS/ESIGN compliance, audit trails (+ 1 reference file)
-6. **prioritization-engine** - RICE/MoSCoW/WSJF frameworks (+ 1 reference file)
-7. **requirements-analyst** - Requirements extraction, gap analysis (+ 1 reference file)
-8. **sprint-planner** - Sprint planning methodology, capacity calculation
-9. **stakeholder-communicator** - Communication templates, audience guidelines
+6. **po-brainstorm** - Brainstorm entry point; supports `--deep` and `--personas` flags
+7. **po-research** - Research entry point
+8. **po-risk-radar** - Blind spot detector
+9. **prioritization-engine** - RICE/MoSCoW/WSJF frameworks (+ 1 reference file)
+10. **requirements-analyst** - Requirements extraction, gap analysis (+ 1 reference file)
+11. **sprint-planner** - Sprint planning methodology, capacity calculation
+12. **stakeholder-communicator** - Communication templates, audience guidelines
+13. **writing-clearly-and-concisely** - Docs, commits, UI text (+ elements-of-style/)
 
 **Architecture**:
 ```
@@ -211,10 +252,17 @@ skill-name/
 - User-level: `~/.claude/skills/` (installed skills)
 
 **Skills with Reference Files**:
-- `backlog-manager/references/` - 2 files (story-templates.md, epic-breakdown-example.md)
-- `esign-domain-expert/references/` - 1 file (domain-knowledge.md)
-- `prioritization-engine/references/` - 1 file (frameworks.md)
-- `requirements-analyst/references/` - 1 file (examples.md)
+- `backlog-manager/references/` — 2 files (story-templates.md, epic-breakdown-example.md)
+- `esign-domain-expert/references/` — 1 file (domain-knowledge.md)
+- `prioritization-engine/references/` — 1 file (frameworks.md)
+- `requirements-analyst/references/` — 1 file (examples.md)
+
+**Agent Reference Files** (in `.claude/agents/references/`):
+- `brainstorm-templates.md` — output templates: SUMMARY.md, IDEAS.md, user stories, Persona Council Findings table, Deep Challenge Results tables
+- `challenge-techniques.md` — question banks for sub-phases 4a-4f + Section 6 Deep Challenge Techniques (4g-4k)
+- `knowledge-patterns.md` — knowledge retrieval patterns
+- `persona-profiles.md` — 7 stakeholder persona profiles for Persona Council (Enterprise Buyer, New User, CFO, Competitor Analyst, Support Lead, Power User, Regulator)
+- `user-interaction-patterns.md` — interaction and clarification patterns
 
 **Skills with Scripts**:
 - `agile-product-owner/scripts/` - user_story_generator.py
@@ -237,8 +285,9 @@ skill-name/
 | **Glob** | Find files by pattern | Locate files, list directories |
 
 **Tool Usage by Agent**:
-- **product-knowledge**: Read, Bash, Grep, Glob (search-focused)
-- **feature-brainstormer**: Read, Write, Bash, Grep, Glob (full workflow)
+- **product-knowledge**: Read, Glob, Grep (search-focused)
+- **feature-brainstormer**: Read, Write, Edit, Bash, Grep, Glob (full workflow)
+- **po-workflow-assistant**: Read, Glob, Grep, Write (read-heavy, limited write)
 
 **Tool Usage by Skills**:
 - Skills don't use tools directly
@@ -253,13 +302,19 @@ skill-name/
 **Directory Structure**:
 ```
 ProductOwnerOrchestration/
-├── claude/
-│   ├── agents/                    # Agent definitions (2 agents)
-│   │   ├── README.md
+├── .claude/
+│   ├── agents/                    # Agent definitions (3 agents)
 │   │   ├── feature-brainstormer.md
-│   │   └── product-knowledge.md
+│   │   ├── product-knowledge.md
+│   │   ├── po-workflow-assistant.md
+│   │   └── references/            # Agent reference files (5 files)
+│   │       ├── brainstorm-templates.md
+│   │       ├── challenge-techniques.md
+│   │       ├── knowledge-patterns.md
+│   │       ├── persona-profiles.md
+│   │       └── user-interaction-patterns.md
 │   │
-│   ├── skills/                    # Skills source (9 skills)
+│   ├── skills/                    # Skills source (13 skills)
 │   │   ├── agile-product-owner/
 │   │   │   ├── SKILL.md
 │   │   │   └── scripts/user_story_generator.py
@@ -273,6 +328,9 @@ ProductOwnerOrchestration/
 │   │   ├── esign-domain-expert/
 │   │   │   ├── SKILL.md
 │   │   │   └── references/domain-knowledge.md
+│   │   ├── po-brainstorm/SKILL.md
+│   │   ├── po-research/SKILL.md
+│   │   ├── po-risk-radar/SKILL.md
 │   │   ├── prioritization-engine/
 │   │   │   ├── SKILL.md
 │   │   │   └── references/frameworks.md
@@ -281,13 +339,19 @@ ProductOwnerOrchestration/
 │   │   │   └── references/examples.md
 │   │   ├── sprint-planner/SKILL.md
 │   │   ├── stakeholder-communicator/SKILL.md
-│   │   └── document-skills/         # Document processing skills
-│   │       ├── docx/                # Word documents
-│   │       ├── pdf/                 # PDF documents
-│   │       ├── pptx/                # PowerPoint presentations
-│   │       └── xlsx/                # Excel spreadsheets
+│   │   ├── writing-clearly-and-concisely/
+│   │   │   ├── SKILL.md
+│   │   │   └── elements-of-style/
+│   │   └── document-skills/         # Document processing skills (separate)
+│   │       ├── docx/
+│   │       ├── pdf/
+│   │       ├── pptx/
+│   │       └── xlsx/
 │   │
-│   └── README.md
+│   └── workflows/                 # Workflow guides (3 files)
+│       ├── brainstorming-workflow.md
+│       ├── feature-development-workflow.md
+│       └── sprint-planning-workflow.md
 │
 ├── docs/                          # Documentation
 │   ├── HOW_TO_USE_SKILLS.md      # Skills usage guide
@@ -469,6 +533,13 @@ Both agents use **user-level memory** to learn across projects:
 - Want structured brainstorming with evaluation
 - Need optional user story generation
 - Want 50-100+ diverse ideas
+- Use `--personas` to activate the Persona Council (7 stakeholder POVs)
+- Use `--deep` to run enhanced challenge sub-phases (4g-4k) on the top 3 ideas
+
+**Use @po-workflow-assistant when**:
+- Need guidance on PO workflow decisions
+- Want structured support for strategic planning
+- Need to synthesize information across multiple product documents
 
 ### When to Call Skills Directly
 
@@ -534,10 +605,10 @@ Step 5: Q&A
 
 ### Agent Permissions
 - Agents have explicit tool restrictions
-- product-knowledge: Read-only search operations
-- feature-brainstormer: Full read-write for workflow orchestration
+- product-knowledge: Read, Glob, Grep — search-only, no writes
+- feature-brainstormer: Read, Write, Edit, Bash, Grep, Glob — full workflow orchestration
+- po-workflow-assistant: Read, Glob, Grep, Write — read-heavy with limited write
 - Bash commands sandboxed to project directory
-- Memory scoped appropriately (user-level for cross-project learning)
 
 ---
 
@@ -629,20 +700,20 @@ Memory:  Per-developer (local)
 | Component | Version | Compatibility |
 |-----------|---------|---------------|
 | Claude Code | Any with subagent support | Required |
-| System Architecture | v3.0 (Simplified) | Current |
-| Agents | 2 core agents | Stable |
-| Skills | 9 skills | Backward compatible |
-| Memory Format | Markdown | Stable |
+| System Architecture | v4.2 | Current |
+| Agents | 3 agents | Stable |
+| Skills | 13 skills | Backward compatible |
+| Agent References | 5 files | Stable |
 
 ---
 
 ## Architecture Benefits
 
-### Simplification (v3.0)
-- ✅ **Clearer**: 2 agents vs 14 agents
+### Simplification (v3.0+)
+- ✅ **Clearer**: 3 focused agents vs 14 agents
 - ✅ **More Control**: Direct skill calls vs agent delegation
 - ✅ **More Transparent**: Users see methodology explicitly
-- ✅ **Easier to Learn**: Simple mental model (2 agents + 9 skills)
+- ✅ **Easier to Learn**: Simple mental model (3 agents + 13 skills)
 
 ### Separation of Concerns
 - ✅ **Agents**: Complex workflows requiring tool orchestration
@@ -660,9 +731,11 @@ Memory:  Per-developer (local)
 ## System Evolution
 
 ### Version History
-- **v3.0.0** (2024-02-07): Simplified to 2 agents + 9 skills (call directly)
-- **v2.0.0** (2024-02-06): Added skills integration (14 agents + 8 skills)
-- **v1.0.0** (2024-01-XX): Initial agent system
+- **v4.2.0** (2026-02-28): Added --deep flag (challenge sub-phases 4g-4k), --personas flag (Persona Council with 7 stakeholder personas), persona-profiles.md agent reference; updated po-brainstorm skill with flag support
+- **v4.0.0** (2026-02-XX): Added po-workflow-assistant agent; expanded to 13 skills (added po-brainstorm, po-research, po-risk-radar, writing-clearly-and-concisely)
+- **v3.0.0** (2026-02-07): Simplified to 2 agents + 9 skills (call directly)
+- **v2.0.0** (2026-02-06): Added skills integration (14 agents + 8 skills)
+- **v1.0.0** (2026-01-XX): Initial agent system
 
 ### Design Decisions
 - **Simplification**: Reduced agent count for clarity (user feedback: "too many agents")
@@ -687,6 +760,9 @@ cat ~/.claude/agent-memory/product-knowledge/MEMORY.md
 
 # View what feature-brainstormer has learned
 cat ~/.claude/agent-memory/feature-brainstormer/MEMORY.md
+
+# View what po-workflow-assistant has learned
+cat ~/.claude/agent-memory/po-workflow-assistant/MEMORY.md
 ```
 
 ### Workflow Tracing
@@ -699,10 +775,10 @@ cat ~/.claude/agent-memory/feature-brainstormer/MEMORY.md
 
 ## Conclusion
 
-The Product Owner Orchestration System v3.0 provides a **simplified, controllable, and transparent** architecture:
+The Product Owner Orchestration System v4.2 provides a **simplified, controllable, and transparent** architecture:
 
-- **2 Agents**: Handle complex workflows (Q&A and brainstorming)
-- **9 Skills**: Provide domain knowledge users call directly
+- **3 Agents**: Handle complex workflows (Q&A, brainstorming, PO workflow assistance)
+- **13 Skills**: Provide domain knowledge users call directly
 - **Clear Separation**: Agents orchestrate tools, skills provide knowledge
 - **User Control**: Direct skill calls give full transparency and control
 

@@ -64,48 +64,21 @@ Use 3-5 questions per idea. Rotate through to avoid repetition across ideas.
 
 ## 3. Persona Challenge Profiles
 
-Apply one or more of these personas to stress-test top ideas. Give each persona a voice.
+Apply one or more of these personas to stress-test top ideas during Devil's Advocate (4c). Give each persona a voice.
 
-### The Skeptical Enterprise Buyer
-**Background**: IT Director or procurement lead at a mid-large organization.
-**Concerns**: Security compliance, integration with existing systems, vendor lock-in, data sovereignty.
-**Signature objections**:
-- "How does this integrate with our SSO / SIEM / existing workflow tools?"
-- "Who owns the data, and where is it stored?"
-- "What is the audit trail for regulatory compliance?"
-- "What happens to our data if we stop using this product?"
+**Full persona profiles** (concerns, objections, decision criteria, empathy maps): see `.claude/agents/references/persona-profiles.md`.
 
-### The Overwhelmed New User
-**Background**: First-time user, low technical sophistication, high task pressure.
-**Concerns**: Learning curve, cognitive overload, fear of making mistakes.
-**Signature objections**:
-- "I do not have time to learn a new workflow."
-- "What happens if I do it wrong? Can I undo it?"
-- "Why is there no simple guided path?"
+**Quick reference — signature questions per persona:**
 
-### The Cost-Conscious CFO
-**Background**: Finance executive focused on ROI and total cost of ownership.
-**Concerns**: Incremental licensing cost, implementation/migration cost, opportunity cost.
-**Signature objections**:
-- "What is the measurable ROI and over what time horizon?"
-- "What is the total cost including implementation, training, and support?"
-- "What is the downside risk if this does not deliver the projected value?"
-
-### The Competitor Analyst
-**Background**: Rival PM or strategy team monitoring the market.
-**Concerns**: Differentiation gaps, copying, response strategy.
-**Perspective**:
-- "This is easy to replicate. What is our 6-month head start advantage?"
-- "Their approach has this weakness we can exploit..."
-- "If we launched this, how would they respond within 90 days?"
-
-### The Support Team Lead
-**Background**: Head of customer support, responsible for ticket volume and team capacity.
-**Concerns**: Edge cases that generate support tickets, complexity in explaining to users.
-**Signature objections**:
-- "This will generate a flood of 'how do I...' tickets because..."
-- "The error messages are not actionable — users will call us when it fails."
-- "We do not have documentation or training for this yet."
+| Persona | Signature Objection |
+|---------|---------------------|
+| Enterprise Buyer | "How does this integrate with our SSO? Who owns the data?" |
+| New User | "I do not have time to learn this. What if I make a mistake?" |
+| CFO | "What is the measurable ROI? What is the all-in cost?" |
+| Competitor Analyst | "This is easy to replicate. What is our 6-month head start?" |
+| Support Lead | "This will flood us with tickets. Error messages are not actionable." |
+| Power User | "This breaks my expert workflow. Where is the bulk operation?" |
+| Regulator | "Which regulation clause does this activate? Where is the audit trail?" |
 
 ---
 
@@ -167,3 +140,99 @@ Use these for high-stakes decisions or strategic exploration sessions.
 - Panel challenge: Three rounds of objections from different stakeholder perspectives.
 - Response: Defend each objection with evidence or acknowledge the limitation.
 - **Outcome**: Forces explicit justification for every key assumption. Undefendable positions become visible.
+
+---
+
+## 6. Deep Challenge Techniques (activated by `--deep` flag)
+
+These techniques run after the standard 6 sub-phases (4a-4f), on the **top 3 ideas only** to manage context. See `feature-brainstormer.md` for the workflow trigger.
+
+### 4g: Steelman Protocol
+
+Build the strongest possible case FOR each top idea, incorporating what survived the standard challenge (4a-4f).
+
+**Purpose**: Prevents premature dismissal after adversarial challenge. Forces explicit articulation of the best case after scrutiny. Reduces confirmation bias going into the deeper challenge sub-phases.
+
+**Process**:
+1. "Assume this idea succeeds completely. What did we get right?"
+2. Articulate the 3 strongest arguments for building this idea, using surviving challenge findings as support.
+3. Identify the scenario under which this idea would be transformative.
+4. Document the steel-manned version in the challenge findings.
+
+**Note**: The steel-manned version becomes the benchmark for the remaining deep challenges (4h-4k). If those sub-phases cannot defeat the steel-man, the objections are weak.
+
+---
+
+### 4h: Socratic Depth Protocol
+
+Ask progressively deeper questions to expose unstated assumptions. Default: 2 levels. Maximum under `--deep`: 5 levels.
+
+**Tone**: Collaborative curiosity — not interrogation. "What data most strongly supports this?" not "Prove it or I reject it."
+
+**Escape valve**: If the user says "I accept this risk" or "moving on," the protocol ends immediately and documents the depth reached.
+
+**Question progression (per surviving idea)** — ask up to 5 levels:
+- Level 1: "What is the key claim this idea depends on?"
+- Level 2: "What evidence supports that claim? How strong is it?"
+- Level 3: "If that evidence were wrong, what else changes?"
+- Level 4: "What assumption underlies even that evidence?"
+- Level 5: "What would falsify this idea entirely?"
+
+Document: the depth reached, the weakest link exposed, and whether the idea survived.
+
+---
+
+### 4i: Assumption Ladder
+
+Walk each top idea through the Ladder of Inference (Argyris/Senge). Challenge at every rung.
+
+**Rungs** (bottom to top):
+1. **Data observed**: What facts do we actually have? (not interpretations)
+2. **Data selected**: Which data did we choose to focus on? What did we ignore?
+3. **Interpreted as**: What meaning did we assign to that data?
+4. **Assumed**: What did we take for granted without checking?
+5. **Concluded**: What decision did we reach from those assumptions?
+6. **Believed**: What belief does this conclusion reinforce?
+7. **Act on**: What would we do if this belief is correct?
+
+**Challenge prompt**: "At rung [X], we [assumed/interpreted/concluded]. What if that rung is wrong? How does the idea hold up if we descend back to the raw data?"
+
+---
+
+### 4j: Regulatory Pre-Mortem
+
+Surface regulatory, legal, and compliance risks before commitment.
+
+**Core question**: "Which specific regulation, standard, or compliance requirement could block, delay, or kill this feature in the next 18 months?"
+
+**Probe by domain**:
+- **Data privacy**: GDPR, CCPA, data residency laws — does this feature touch personal data?
+- **Industry regulation**: eIDAS, HIPAA, PCI-DSS, SOC 2, 21 CFR Part 11 — which apply?
+- **Accessibility**: WCAG 2.1 AA, ADA, Section 508 — does this create new a11y obligations?
+- **Export / jurisdiction**: Does this feature behave differently in EU, US, APAC regulatory regimes?
+- **Contractual**: Do existing enterprise contracts restrict this capability?
+
+**Output**: Regulatory risk table — Regulation | Applicability (High/Med/Low) | If violated: | Mitigation
+
+---
+
+### 4k: Anti-Pattern Check
+
+Compare top ideas against a catalog of known product management failure patterns.
+
+**Core prompt**: "Does this idea implement a known anti-pattern? Be specific."
+
+**Anti-pattern catalog**:
+
+| Anti-Pattern | Description | Warning Sign |
+|---|---|---|
+| **Build Trap** | Measuring success by features shipped, not outcomes delivered | "We need to build this to show progress" |
+| **Feature Parity** | Building features only because competitors have them | "They have it, so we need it too" |
+| **Premature Scaling** | Designing for 10x users before achieving 1x | Architecture decisions driven by hypothetical scale |
+| **Solution-First Thinking** | Starting with a solution before validating the problem | "We have this technology, let's find a use for it" |
+| **Scope Creep Metamorphosis** | Each new capability creates complexity outweighing its value | The feature needs 3 other features to work |
+| **Complexity Escalator** | Each release requires more user knowledge than the last | Power users love it; new users are lost |
+| **Notification Overload** | Adding value through interruption | "Users need to know about this" |
+| **Dark Pattern Pressure** | Driving metrics through friction, not genuine value | Engagement metrics rise but satisfaction drops |
+
+**Process**: For each top idea, check: does it match any pattern? If yes, document it. If the anti-pattern is unavoidable, document the mitigation.

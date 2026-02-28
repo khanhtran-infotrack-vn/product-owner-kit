@@ -26,10 +26,11 @@ python3 .claude/skills/agile-product-owner/scripts/user_story_generator.py --sav
     tools: Read,Glob,Grep,Write     ├── po-research           (research entry point)
                                     ├── po-risk-radar         (blind spot detector)
 Agent references/                   ├── prioritization-engine (RICE, MoSCoW, WSJF)
-├── challenge-techniques.md         ├── requirements-analyst  (extraction, gap analysis)
-├── user-interaction-patterns.md    ├── sprint-planner        (capacity, story selection)
-├── brainstorm-templates.md         ├── stakeholder-communicator (updates, presentations)
-└── knowledge-patterns.md          └── writing-clearly-and-concisely (docs, commits, UI text)
+├── brainstorm-templates.md         ├── requirements-analyst  (extraction, gap analysis)
+├── challenge-techniques.md         ├── sprint-planner        (capacity, story selection)
+├── knowledge-patterns.md           ├── stakeholder-communicator (updates, presentations)
+├── persona-profiles.md             └── writing-clearly-and-concisely (docs, commits, UI text)
+└── user-interaction-patterns.md
 ```
 
 **Agents** use Claude Code's subagent system (invoked with `@agent-name`). They have tool access declared in their `tools:` frontmatter field and orchestrate multi-step workflows.

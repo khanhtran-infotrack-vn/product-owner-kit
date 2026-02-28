@@ -438,3 +438,60 @@ For questions about this update or how to use the enhanced feature:
 - Review agent documentation: `claude/agents/feature-brainstormer.md`
 - Test with: `brainstorm/` folder examples
 - Check skill integration: `/.claude/skills/agile-product-owner/`
+
+---
+
+## Update: 2026-02-28 — Deep Challenge & Persona Council
+
+**Update Type**: Feature Enhancement
+**Agent**: feature-brainstormer
+**Skill updated**: po-brainstorm (now supports `--deep` and `--personas` flags)
+
+### --deep Flag: Enhanced Challenge Sub-Phases
+
+Activating `--deep` runs 5 additional challenge sub-phases (4g-4k) on the **top 3 ideas** after the standard 6 sub-phases (4a-4f) complete.
+
+| Sub-phase | Name | What it does |
+|-----------|------|-------------|
+| 4g | Steelman Protocol | Build the strongest possible case for each idea, then identify what would have to be true for it to fail |
+| 4h | Socratic Depth | Apply 5-level "why" questioning to surface root assumptions and expose gaps in reasoning |
+| 4i | Assumption Ladder | Map every assumption from surface level to foundational; flag the highest-risk rungs |
+| 4j | Regulatory Pre-Mortem | Simulate a regulatory or compliance review 12 months post-launch; identify blockers before they occur |
+| 4k | Anti-Pattern Check | Cross-reference each idea against known product anti-patterns; flag any matches |
+
+Deep challenge results are written to `brainstorm/[feature]/SUMMARY.md` using the Deep Challenge Results tables from `brainstorm-templates.md`.
+
+### --personas Flag: Persona Council (Step 1.5)
+
+Activating `--personas` inserts a **Persona Council** step (Step 1.5) before the SCAMPER phase. Each of 7 stakeholder personas generates 3-5 ideas from their own perspective, adding points of view that pure ideation tends to miss.
+
+**Personas** (defined in `.claude/agents/references/persona-profiles.md`):
+1. Enterprise Buyer — procurement cost, security, compliance risk
+2. New User — onboarding friction, first-impression clarity
+3. CFO — ROI, cost reduction, measurable outcomes
+4. Competitor Analyst — differentiation, parity gaps, switching triggers
+5. Support Lead — ticket drivers, edge cases, documentation gaps
+6. Power User — workflow efficiency, advanced features, API access
+7. Regulator — audit trail completeness, data residency, legal exposure
+
+Each persona provides an "empathy snapshot" (role, top concern, 3-5 idea prompts). Outputs are captured in the Persona Council Findings table in `brainstorm-templates.md` and written to the IDEAS.md file.
+
+### Flag Combination Rules
+
+| Invocation | Behavior |
+|------------|----------|
+| `--personas` only | Persona Council runs at Step 1.5; standard challenge sub-phases 4a-4f |
+| `--deep` only | No Persona Council; standard 4a-4f + deep 4g-4k on top 3 ideas |
+| `--deep --personas` | Persona Council at 1.5 + standard 4a-4f + deep 4g-4k on top 3 ideas |
+| `--challenge --deep` | Re-runs challenge phases; includes deep sub-phases 4g-4k |
+
+Flags are additive. Neither flag alters the other phases.
+
+### Files Created or Modified
+
+| File | Change |
+|------|--------|
+| `.claude/agents/references/persona-profiles.md` | New — 7 stakeholder persona profiles with empathy snapshots |
+| `.claude/agents/references/challenge-techniques.md` | Added Section 6: Deep Challenge Techniques (4g-4k question banks) |
+| `.claude/agents/references/brainstorm-templates.md` | Added Persona Council Findings table and Deep Challenge Results tables |
+| `.claude/skills/po-brainstorm/SKILL.md` | Added `--deep` and `--personas` flag documentation and routing logic |

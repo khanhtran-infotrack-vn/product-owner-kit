@@ -67,6 +67,24 @@ Save to `brainstorm/[feature_name]/SUMMARY.md`:
 
 ---
 
+## Persona Council Findings *(include only when --personas flag was active)*
+
+> *Note: Persona perspectives are AI simulations — prompts for further investigation, not validated stakeholder positions.*
+
+| Persona | Top 3 Ideas Generated | Empathy Snapshot (Think / Feel / Say / Do) |
+|---------|----------------------|---------------------------------------------|
+| Enterprise Buyer | [ideas] | [one sentence each] |
+| New User | [ideas] | [one sentence each] |
+| CFO | [ideas] | [one sentence each] |
+| Competitor | [ideas] | [one sentence each] |
+| Support Lead | [ideas] | [one sentence each] |
+| Power User | [ideas] | [one sentence each] |
+| Regulator | [ideas] | [one sentence each] |
+
+**Persona diversity check**: Were any domains (security, cost, compliance, UX, support) uncovered by SCAMPER but surfaced by personas?
+
+---
+
 ## Challenge & Critique Findings
 
 ### Pre-Mortem Results
@@ -88,6 +106,35 @@ Save to `brainstorm/[feature_name]/SUMMARY.md`:
 | [Idea 1] | #1 | #1 | Confirmed: [reason] |
 
 **Challenge Summary**: [1-2 sentences]
+
+### Deep Challenge Results *(include only when --deep flag was active)*
+
+#### Steelman Protocol
+| Top Idea | Steel-Manned Version | Strongest Argument For |
+|----------|---------------------|----------------------|
+| [Idea 1] | [Best case scenario] | [Top argument] |
+
+#### Socratic Depth (levels reached)
+| Top Idea | Deepest Claim Tested | Evidence Strength | Weakest Link Found |
+|----------|---------------------|------------------|-------------------|
+| [Idea 1] | [Claim at deepest level] | Strong/Weak/None | [Vulnerability] |
+
+#### Assumption Ladder
+| Top Idea | Rung Where Reasoning Breaks | If Descend to Raw Data: |
+|----------|----------------------------|------------------------|
+| [Idea 1] | Assumed / Concluded / Believed | [What changes] |
+
+#### Regulatory Pre-Mortem
+| Regulation | Applicability | Risk if Violated | Mitigation |
+|------------|--------------|-----------------|------------|
+| [Reg name] | High/Med/Low | [Consequence] | [Mitigation] |
+
+#### Anti-Pattern Check
+| Top Idea | Anti-Pattern Match | Severity | Mitigation |
+|----------|-------------------|----------|------------|
+| [Idea 1] | [Pattern name] or None | High/Med/Low/None | [How to avoid] |
+
+**Deep Challenge Summary**: [1-2 sentences on what the deep challenge revealed that standard challenge missed]
 
 ---
 

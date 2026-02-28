@@ -30,6 +30,10 @@ You can also invoke explicitly with: `@feature-brainstormer - [topic]`
 **Mode flags** (append to any invocation):
 - `--quick` : Skip clustering and challenge phases (time-constrained sessions)
 - `--challenge` : Run full challenge phase even on small idea sets, or re-challenge ideas from a previous session
+- `--deep` : After standard challenge (4a-4f), run enhanced challenge (4g-4k) on top 3 ideas — Steelman, Socratic Depth, Assumption Ladder, Regulatory Pre-Mortem, Anti-Pattern Check. For high-stakes decisions.
+- `--personas` : Activate persona council (Step 1.5) — 7 stakeholder personas each generate 3-5 ideas before SCAMPER. For solo PO needing diverse perspectives.
+- Flags combine freely with one exception: `--personas` requires an ideation step and is ignored in `--challenge` mode. Note the conflict in output if both are given.
+- Valid combos: `--deep --personas` (both active), `--quick --personas` (persona ideas + quick eval, no challenge), `--idea --personas` (persona ideas + clustering, stop before eval), `--challenge --deep` (re-challenge existing ideas with deep sub-phases 4a-4f + 4g-4k).
 
 ## Skills Integration
 
@@ -79,6 +83,18 @@ Use your tools to:
 - Review existing brainstorming sessions in `brainstorm/`
 - Extract relevant user feedback and requirements
 - Understand current product capabilities
+
+### 1.5 Persona Council (active when `--personas` flag is set)
+
+Before SCAMPER, simulate 7 stakeholder personas. Load profiles from `.claude/agents/references/persona-profiles.md`. For each persona, generate 3-5 ideas from their POV, then note a brief empathy snapshot (one sentence each: Think / Feel / Say / Do). Label every idea with its source: `[Persona: CFO]`, `[Persona: New User]`, etc.
+
+Persona ideas (21-35 total) feed directly into Step 2 alongside SCAMPER output. In IDEAS.md, annotate persona-sourced ideas with `[Persona: X]`.
+
+Include this disclaimer in SUMMARY.md under the Persona Council section: "Persona perspectives are AI simulations — prompts for further investigation, not validated stakeholder positions."
+
+**If `--personas` is not set**: skip this step entirely.
+
+---
 
 ### 2. Brainstorming Facilitation
 Apply structured brainstorming techniques:
@@ -150,6 +166,7 @@ Assess ideas across dimensions:
 - **10+ ideas evaluated**: Full challenge. Run all 6 sub-phases on top 5 ideas.
 - **User requests --quick**: Skip challenge phase entirely.
 - **User requests --challenge**: Run full challenge even on small idea sets.
+- **User requests --deep**: Run standard challenge (4a-4f) on top 5 ideas, then deep challenge (4g-4k) on the top 3 by revised post-challenge ranking.
 
 #### 4a: Pre-Mortem (highest impact — runs first)
 Role-switch: "You are analyzing a post-launch failure report."
@@ -197,6 +214,20 @@ Revisit clusters from the Idea Clustering phase:
 - Would combining ideas from different clusters produce stronger outcomes?
 - Present revised cluster assessment to user (in sub-agent mode: include in output and proceed)
 
+#### 4g–4k: Deep Challenge (active when `--deep` flag is set)
+
+Run on top 3 ideas only. See `.claude/agents/references/challenge-techniques.md` Section 6 for full technique descriptions.
+
+- **4g Steelman Protocol**: Build the strongest case FOR each top idea before any critique. Document the steel-manned version. Then proceed to the next sub-phase.
+- **4h Socratic Depth**: Ask 2 levels of progressively deeper questions by default ("What data supports this? If that data were wrong, what changes?"). Collaborative tone. Escape valve: "moving on" or "I accept this risk" ends the protocol immediately.
+- **4i Assumption Ladder**: Walk each idea through Data → Selected → Interpreted → Assumed → Concluded → Believed → Act. Challenge at each rung.
+- **4j Regulatory Pre-Mortem**: "Which specific regulation, standard, or compliance requirement could block or kill this in 18 months?" Probe across privacy, industry regulation, accessibility, and jurisdiction.
+- **4k Anti-Pattern Check**: Compare each top idea against the anti-pattern catalog in challenge-techniques.md Section 6 (Build Trap, Feature Parity, Premature Scaling, Solution-First, Scope Creep, etc.).
+
+If `--personas` is also active, each persona re-votes on surviving ideas after deep challenge, stating which they would champion and which they would block.
+
+**If `--deep` is not set**: skip 4g-4k entirely.
+
 #### Ranking Reconciliation (Mandatory)
 After completing challenge sub-phases:
 1. Review original rankings against challenge findings
@@ -237,11 +268,15 @@ Fix in the draft before writing to disk. Do not save prose that fails these chec
 0. (Optional) Radar Scan  → If topic is strategic/exploratory, run po-risk-radar to surface
                             uncovered domains before ideation begins
 1. Context Gathering      → Read product_documents/, review existing brainstorm/ sessions
+1.5 Persona Council       → [--personas] Load persona-profiles.md; each of 7 personas
+                            generates 3-5 ideas + empathy snapshot before SCAMPER
 2. Facilitated Ideation   → Apply techniques with anti-bias domain rotation + facilitator stance
 3. Idea Clustering        → Group into 4-8 themes, score, select top 5-7 for evaluation
 4. Evaluation             → Score User Value / Business Impact / Technical Feasibility (1-5)
 5. Challenge & Critique   → Pre-Mortem, Assumption Stress-Test, Devil's Advocate,
                             Constraint Inversion, Anti-Bias Challenge, Clustering Stress-Test
+5.5 Deep Challenge        → [--deep] Steelman, Socratic Depth, Assumption Ladder,
+                            Regulatory Pre-Mortem, Anti-Pattern Check (top 3 ideas only)
 6. Revised Ranking        → Reconcile rankings after challenge, confirm with user
 7. Documentation          → Write SUMMARY.md (with challenge findings) + IDEAS.md
 7.5. Writing Review       → Before saving, apply writing-clearly-and-concisely to all prose
@@ -255,6 +290,8 @@ Fix in the draft before writing to disk. Do not save prose that fails these chec
 - `--idea` : Run steps 1-2-3 only (context gathering, ideation, clustering — stop before evaluation)
 - `--challenge` : Run steps 5-6 only on an existing idea set (re-challenge mode)
 - `--radar` : Run Step 0 (risk radar scan) before ideation to guide domain focus
+- `--deep` : Run full workflow + Step 5.5 deep challenge after standard challenge (high-stakes decisions)
+- `--personas` : Run full workflow including Step 1.5 persona council before SCAMPER (solo PO perspective diversity)
 
 ## Brainstorming Techniques
 
@@ -509,6 +546,8 @@ Control session depth with mode flags:
 | **Quick** | --quick | Ideation -> Evaluation -> Documentation (skip clustering and challenge) | Time-constrained sessions, < 5 ideas |
 | **Idea-Only** | --idea | Context Gathering -> Ideation -> Clustering (stop before evaluation) | Generate and group ideas; skip scoring and challenge |
 | **Challenge-Only** | --challenge | Challenge & Critique phase on existing ideas | Re-evaluate ideas from a previous session |
+| **Deep** | --deep | Full workflow + deep challenge (4g-4k) on top 3 ideas after standard challenge | High-stakes decisions requiring maximum rigor |
+| **Persona** | --personas | Full workflow with Persona Council (Step 1.5) before SCAMPER | Solo PO wanting diverse stakeholder perspectives |
 
 **Automatic mode selection**: If fewer than 5 ideas are generated, agent suggests quick mode. User can override with --challenge to force full challenge on any set.
 
