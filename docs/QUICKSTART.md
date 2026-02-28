@@ -65,6 +65,12 @@ The feature-brainstormer reads it to anchor ideation in your actual product.
 - `--quick` — skip ideation+clustering, go straight to evaluation (faster)
 - `--challenge` — re-challenge ideas from a previous session
 - `--idea` — ideation only, stop before challenge
+- `--deep` — run 5 enhanced challenge sub-phases (Steelman, Socratic Depth, Assumption Ladder, Regulatory Pre-Mortem, Anti-Pattern Check) on top 3 ideas after the standard challenge. For high-stakes decisions.
+- `--personas` — activate Persona Council before ideation: 7 stakeholder personas (Enterprise Buyer, New User, CFO, Competitor Analyst, Support Lead, Power User, Regulator) each generate 3-5 ideas from their POV. For solo PO who needs diverse perspectives.
+
+**Flag combinations:**
+- `--deep --personas` — both enhancements active (persona-sourced ideas feed into SCAMPER, top 3 ideas go through deep challenge; personas re-vote at the end)
+- `--challenge --deep` — re-challenge a previous session with the full deep challenge block
 
 ---
 

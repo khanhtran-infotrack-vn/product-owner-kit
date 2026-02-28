@@ -10,14 +10,26 @@ Skills provide domain knowledge (frameworks, templates, best practices) that you
 
 ## When to Use Skills vs Agents
 
-### Use Agents (2 available)
-- **@product-knowledge**: Search documentation and answer questions with citations
-- **@feature-brainstormer**: Facilitate creative brainstorming with optional story generation
+The system has three invocation styles — pick the one that fits your task:
 
-### Use Skills Directly (8 available)
-- **Creating artifacts**: Use skills to apply frameworks and templates
-- **Specific knowledge**: Reference particular methods or best practices
-- **Full control**: You decide exactly what to apply and how
+### 1. Po-* Entry Points (slash commands) — recommended starting point
+For brainstorming, research, and blind-spot scanning. These are slash commands that gather context, then dispatch to the right agent automatically.
+
+- **`/po-brainstorm [topic]`** — structured ideation → challenge → output
+- **`/po-research [question]`** — search all product docs, return cited answers
+- **`/po-risk-radar`** — scan docs for uncovered strategic domains
+
+### 2. Direct Agents (@mention) — when you want full control
+- **`@feature-brainstormer`** — invoke the brainstormer directly with your own framing
+- **`@product-knowledge`** — query docs with your own search framing
+- **`@po-workflow-assistant`** — strategic planning meta-agent
+
+### 3. Skills Directly ("use the X skill") — for creating artifacts
+Call skills directly to apply frameworks and templates when creating stories, plans, docs, or analyses. No agent overhead; full control over methodology.
+
+**Creating artifacts**: Use skills to apply frameworks and templates
+**Specific knowledge**: Reference particular methods or best practices
+**Full control**: You decide exactly what to apply and how
 
 ---
 
@@ -462,6 +474,130 @@ Output to: communications/executive-updates/q1-2025.md
 
 ---
 
+## Po-* Entry Point Skills
+
+These three skills work as **slash commands** — they gather context, then dispatch to the right agent automatically. Use them instead of invoking agents directly when you want the guided workflow experience.
+
+---
+
+### po-brainstorm
+
+**Who should use this**: A Product Owner who wants to explore ideas for a feature, improvement, or product direction — especially when working solo and needing structured output with challenge phases.
+
+**What it does**:
+1. Asks 1-3 scoping questions (target user, constraints, session goal)
+2. Dispatches to the `feature-brainstormer` agent with your context pre-loaded
+3. The agent generates 50-100+ ideas using SCAMPER + "How Might We" with anti-bias domain rotation, clusters them into themes, evaluates each, runs challenge sub-phases, reconciles rankings, and writes `brainstorm/[topic]/SUMMARY.md` + `IDEAS.md`
+4. Surfaces the recommended approach and any follow-up questions after the agent finishes
+
+**Invocation**:
+```
+/po-brainstorm improve mobile onboarding flow
+/po-brainstorm new signature request feature
+/po-brainstorm reduce support ticket volume for document errors
+```
+
+**Mode flags** (append to the topic):
+
+| Flag | What it does | Use when |
+|------|-------------|----------|
+| *(no flag)* | Full workflow: ideation → clustering → evaluation → challenge → docs | Standard brainstorm |
+| `--quick` | Skip clustering + challenge; ideation → evaluation → docs | Time-constrained, need ideas fast |
+| `--idea` | Ideation + clustering only; stop before scoring | Just want a list of grouped ideas |
+| `--challenge` | Challenge-only; stress-test ideas from a previous session | Re-examine existing brainstorm output |
+| `--deep` | Full workflow + 5 enhanced challenge sub-phases (Steelman, Socratic Depth, Assumption Ladder, Regulatory Pre-Mortem, Anti-Pattern Check) on top 3 ideas | High-stakes decisions requiring maximum rigor |
+| `--personas` | Full workflow with Persona Council before SCAMPER — 7 stakeholder personas (CFO, New User, Enterprise Buyer, Competitor Analyst, Support Lead, Power User, Regulator) each generate ideas from their POV | Solo PO who needs diverse perspectives |
+| `--deep --personas` | Both enhancements active | Maximum rigor + cognitive diversity |
+
+**Examples**:
+```
+/po-brainstorm improve onboarding flow --quick
+/po-brainstorm new pricing model --deep --personas
+/po-brainstorm signature request UX --challenge
+```
+
+**Output location**: `brainstorm/[topic-slug]/SUMMARY.md` and `IDEAS.md`
+
+**When to use vs `@feature-brainstormer` directly**: Use `/po-brainstorm` when you want pre-discovery questions asked before the agent runs. Use `@feature-brainstormer` directly when you already have all context and want to pass it in yourself.
+
+---
+
+### po-research
+
+**Who should use this**: A Product Owner who needs to find information already documented in the project — feature status, decisions, requirements, roadmap priorities, user research findings, or stakeholder feedback.
+
+**What it does**:
+1. Routes your question to the `product-knowledge` agent
+2. The agent searches all product documentation directories: `product_documents/`, `brainstorm/`, `backlog/`, `sprints/`, `requirements/`, `roadmap/`, `docs/`
+3. Returns answers with exact file path citations
+4. Says "I don't know" if the answer is not documented — never guesses
+
+**Invocation**:
+```
+/po-research what features are planned for mobile?
+/po-research what did we decide about the signature workflow?
+/po-research what are the requirements for the onboarding feature?
+/po-research why did we deprioritize feature X?
+/po-research what's the status of the Q2 backlog?
+```
+
+**What it will NOT do**:
+- Infer or speculate beyond documented content
+- Search the web or external sources
+- Answer questions about undocumented decisions or discussions
+
+**When to use vs `@product-knowledge` directly**: Use `/po-research` for a simple Q&A interaction. Use `@product-knowledge` directly when you want to control the search strategy or specify which directories to search.
+
+---
+
+### po-risk-radar
+
+**Who should use this**: A Product Owner who wants to find blind spots — strategic domains they haven't thought about or documented. Particularly useful before quarterly planning, before a major feature brainstorm, or after a product pivot.
+
+**What it does**:
+1. Scans all product artifacts: `product_documents/`, `brainstorm/`, `backlog/`, `requirements/`, `roadmap/`, `docs/decisions/`, `docs/assumptions/`
+2. Maps coverage against 22 strategic domains across 4 tiers (Core Product, Risk & Compliance, Scale & Operations, Strategic & Future)
+3. Marks each domain as ✅ Covered / ⚠️ Partial / ❌ Missing
+4. Surfaces the top 3-5 blind spots with severity ratings (🔴 Critical → 🟢 Low) and explains why each matters
+5. Suggests a ready-to-use `/po-brainstorm` command for each blind spot
+
+**Domain tiers covered**:
+- **Tier 1 — Core Product**: User personas, core journey, onboarding, pain points, competitive differentiation, pricing, KPIs
+- **Tier 2 — Risk & Compliance**: Security, regulatory compliance, audit trails, data governance, error handling, business continuity
+- **Tier 3 — Scale & Operations**: Performance, i18n, accessibility, support burden, technical debt, integrations
+- **Tier 4 — Strategic & Future**: Market trends, retention/churn, partner ecosystem, mobile/cross-platform, AI opportunities, stakeholder alignment
+
+**Invocation**:
+```
+/po-risk-radar
+/po-risk-radar compliance
+/po-risk-radar user experience
+```
+
+**Output**: Coverage map table + top blind spots with severity + suggested `/po-brainstorm` actions
+
+**When to run**:
+- Start of each quarter — before roadmap planning
+- Before a major feature brainstorm — to guide domain focus
+- After a product pivot — to check if artifacts still reflect the new direction
+
+**Save the output** (optional): Ask Claude to save the report to `docs/risk-radar-YYYY-MM-DD.md` to track coverage improvement over time.
+
+**Example output snippet**:
+```
+## Top 3 Blind Spots
+
+🔴 CRITICAL: Security & Data Privacy
+Why critical: No security or data handling requirements documented anywhere.
+Suggested action: /po-brainstorm security and data privacy requirements --deep
+
+🟡 HIGH: Customer Retention & Churn
+Why high: No churn analysis or retention strategy in any documented artifact.
+Suggested action: /po-brainstorm retention and churn reduction strategies
+```
+
+---
+
 ## Combining Multiple Skills
 
 Often you'll want to combine multiple skills in a single workflow:
@@ -669,9 +805,10 @@ Step 2: Prioritize using prioritization-engine skill
 ### "I don't know which skill to use"
 
 **Solution**: Match your task to skill purpose:
-- Creating artifacts (stories, docs, plans) → Use specific skill
-- Answering questions from docs → Use @product-knowledge agent
-- Creative ideation → Use @feature-brainstormer agent
+- Creating artifacts (stories, docs, plans) → Use specific domain skill directly
+- Answering questions from docs → `/po-research` or `@product-knowledge`
+- Creative ideation → `/po-brainstorm` or `@feature-brainstormer`
+- Finding blind spots in product strategy → `/po-risk-radar`
 
 ### "The output doesn't match my needs"
 
@@ -725,20 +862,30 @@ cat ~/.claude/skills/backlog-manager/references/epic-breakdown-example.md
 
 ## Summary
 
-### Use Agents (2) For:
-- **@product-knowledge**: Searching docs and answering questions
-- **@feature-brainstormer**: Creative brainstorming with optional story generation
+### Po-* Entry Points (slash commands):
+- **`/po-brainstorm [topic]`** — structured brainstorming with pre-discovery; dispatches to feature-brainstormer; supports `--quick`, `--idea`, `--challenge`, `--deep`, `--personas`
+- **`/po-research [question]`** — cited answers from product docs; dispatches to product-knowledge; never guesses
+- **`/po-risk-radar`** — blind spot scan; maps 22 strategic domains; surfaces missing coverage with severity and suggested actions
 
-### Use Skills (8) For:
+### Direct Agents (3):
+- **`@product-knowledge`** — search docs with your own query framing
+- **`@feature-brainstormer`** — brainstorm with your own context pre-loaded
+- **`@po-workflow-assistant`** — strategic planning meta-agent
+
+### Domain Knowledge Skills (13 — call directly):
 - **agile-product-owner**: User story creation and estimation
 - **analytics-insights**: Metrics analysis and experiments
 - **backlog-manager**: Story creation and backlog organization
 - **documentation-specialist**: Writing docs, PRDs, ADRs
 - **esign-domain-expert**: eSignature compliance and design
+- **po-brainstorm**: Brainstorm entry point (slash command)
+- **po-research**: Research entry point (slash command)
+- **po-risk-radar**: Blind spot detector (slash command)
 - **prioritization-engine**: Feature ranking with frameworks
 - **requirements-analyst**: Requirements extraction and analysis
 - **sprint-planner**: Sprint planning and capacity calculation
 - **stakeholder-communicator**: Updates and announcements
+- **writing-clearly-and-concisely**: Active voice, no puffery, concise docs
 
 ### Key Benefits:
 - **Control**: You decide which knowledge to apply
